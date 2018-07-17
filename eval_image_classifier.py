@@ -18,6 +18,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import sys
 import math
 import tensorflow as tf
 
@@ -28,7 +29,7 @@ from preprocessing import preprocessing_factory
 slim = tf.contrib.slim
 
 tf.app.flags.DEFINE_integer(
-    'batch_size', 100, 'The number of samples in each batch.')
+    'batch_size', 32, 'The number of samples in each batch.')
 
 tf.app.flags.DEFINE_integer(
     'max_num_batches', None,
@@ -112,7 +113,10 @@ def main(_):
         shuffle=False,
         common_queue_capacity=2 * FLAGS.batch_size,
         common_queue_min=FLAGS.batch_size)
-    [image, label] = provider.get(['image', 'label'])
+    # change['image', 'label'] => ['image', 'label', 'filename', 'categoryname']
+    [image, label, filename, categoryname] = provider.get(
+        ['image', 'label', 'filename', 'categoryname']
+    )
     label -= FLAGS.labels_offset
 
     #####################################
@@ -127,8 +131,9 @@ def main(_):
 
     image = image_preprocessing_fn(image, eval_image_size, eval_image_size)
 
-    images, labels = tf.train.batch(
-        [image, label],
+    # change['image', 'label'] => ['image', 'label', 'filename', 'categoryname']
+    images, labels, filenames, categorynames = tf.train.batch(
+        [image, label, filename, categoryname],
         batch_size=FLAGS.batch_size,
         num_threads=FLAGS.num_preprocessing_threads,
         capacity=5 * FLAGS.batch_size)
@@ -153,8 +158,7 @@ def main(_):
     # Define the metrics:
     names_to_values, names_to_updates = slim.metrics.aggregate_metric_map({
         'Accuracy': slim.metrics.streaming_accuracy(predictions, labels),
-        'Recall_5': slim.metrics.streaming_recall_at_k(
-            logits, labels, 5),
+        'Recall_5': slim.metrics.streaming_recall_at_k(logits, labels, 5),
     })
 
     # Print the summaries to screen.
@@ -162,6 +166,11 @@ def main(_):
       summary_name = 'eval/%s' % name
       op = tf.summary.scalar(summary_name, value, collections=[])
       op = tf.Print(op, [value], summary_name)
+      op = tf.Print(op, [predictions], 'predictions', summarize=FLAGS.batch_size)
+      op = tf.Print(op, [labels], 'labels', summarize=FLAGS.batch_size)
+      op = tf.Print(op, [slim.metrics.streaming_accuracy(predictions, labels)], 'streaming_accuracy'),
+      op = tf.Print(op, [filenames], 'filenames', summarize=FLAGS.batch_size),
+      op = tf.Print(op, [categorynames], 'categorynames', summarize=FLAGS.batch_size),
       tf.add_to_collection(tf.GraphKeys.SUMMARIES, op)
 
     # TODO(sguada) use num_epochs=1
@@ -183,7 +192,8 @@ def main(_):
         checkpoint_path=checkpoint_path,
         logdir=FLAGS.eval_dir,
         num_evals=num_batches,
-        eval_op=list(names_to_updates.values()),
+        # eval_op=list(names_to_updates.values()),
+        eval_op=op,
         variables_to_restore=variables_to_restore)
 
 
