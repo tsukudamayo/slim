@@ -154,6 +154,7 @@ def main(_):
 
     predictions = tf.argmax(logits, 1)
     labels = tf.squeeze(labels)
+    probabilities = tf.nn.softmax(logits)
 
     # Define the metrics:
     names_to_values, names_to_updates = slim.metrics.aggregate_metric_map({
@@ -168,6 +169,8 @@ def main(_):
       op = tf.Print(op, [value], summary_name)
       op = tf.Print(op, [predictions], 'predictions', summarize=FLAGS.batch_size)
       op = tf.Print(op, [labels], 'labels', summarize=FLAGS.batch_size)
+      op = tf.Print(op, [probabilities], 'probabilities',
+                    summarize=dataset.num_classes * FLAGS.batch_size)
       op = tf.Print(op, [slim.metrics.streaming_accuracy(predictions, labels)], 'streaming_accuracy'),
       op = tf.Print(op, [filenames], 'filenames', summarize=FLAGS.batch_size),
       op = tf.Print(op, [categorynames], 'categorynames', summarize=FLAGS.batch_size),

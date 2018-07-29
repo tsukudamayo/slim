@@ -111,6 +111,8 @@ def _add_to_tfrecord(data_filename, labels_filename, num_images,
   """
   images = _extract_images(data_filename, num_images)
   labels = _extract_labels(labels_filename, num_images)
+  file_name = str(data_filename).encode('utf-8')
+
 
   shape = (_IMAGE_SIZE, _IMAGE_SIZE, _NUM_CHANNELS)
   with tf.Graph().as_default():
@@ -125,7 +127,7 @@ def _add_to_tfrecord(data_filename, labels_filename, num_images,
         png_string = sess.run(encoded_png, feed_dict={image: images[j]})
 
         example = dataset_utils.image_to_tfexample(
-            png_string, 'png'.encode(), _IMAGE_SIZE, _IMAGE_SIZE, labels[j])
+            png_string, 'png'.encode(), labels[j], _IMAGE_SIZE, _IMAGE_SIZE, file_name, str(labels[j]).encode('utf-8'))
         tfrecord_writer.write(example.SerializeToString())
 
 

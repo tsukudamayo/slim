@@ -41,7 +41,7 @@ _ITEMS_TO_DESCRIPTIONS = {
 }
 
 
-def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
+def get_split(split_name, dataset_dir, file_name, category_name, file_pattern=None, reader=None):
   """Gets a dataset tuple with instructions for reading MNIST.
 
   Args:
@@ -74,11 +74,15 @@ def get_split(split_name, dataset_dir, file_pattern=None, reader=None):
       'image/format': tf.FixedLenFeature((), tf.string, default_value='raw'),
       'image/class/label': tf.FixedLenFeature(
           [1], tf.int64, default_value=tf.zeros([1], dtype=tf.int64)),
+      'image/filename': tf.FixedLenFeature((), tf.string, default_value=''),
+      'image/categoryname': tf.FixedLenFeature((), tf.string, default_value=''),
   }
 
   items_to_handlers = {
       'image': slim.tfexample_decoder.Image(shape=[28, 28, 1], channels=1),
       'label': slim.tfexample_decoder.Tensor('image/class/label', shape=[]),
+      'filename': slim.tfexample_decoder.Tensor('image/filename', shape=[]),
+      'categoryname': slim.tfexample_decoder.Tensor('image/categoryname', shape=[]),
   }
 
   decoder = slim.tfexample_decoder.TFExampleDecoder(
