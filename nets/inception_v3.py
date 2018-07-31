@@ -428,6 +428,10 @@ def inception_v3(inputs,
                  create_aux_logits=True,
                  scope='InceptionV3',
                  global_pool=False):
+  #--------------------------------------------------------------------#
+  import sys
+  print(sys.stdout.write('crate_aux_logits is %s' % create_aux_logits))
+  #--------------------------------------------------------------------#
   """Inception model from http://arxiv.org/abs/1512.00567.
 
   "Rethinking the Inception Architecture for Computer Vision"
@@ -508,6 +512,10 @@ def inception_v3(inputs,
                 aux_logits, depth(768), kernel_size,
                 weights_initializer=trunc_normal(0.01),
                 padding='VALID', scope='Conv2d_2a_{}x{}'.format(*kernel_size))
+            #----------------------------------------------------------------#
+            import sys
+            print(sys.stdout.write('end_points[Aux_logits] %s' % aux_logits))
+            #----------------------------------------------------------------#
             aux_logits = slim.conv2d(
                 aux_logits, num_classes, [1, 1], activation_fn=None,
                 normalizer_fn=None, weights_initializer=trunc_normal(0.001),
@@ -515,7 +523,6 @@ def inception_v3(inputs,
             if spatial_squeeze:
               aux_logits = tf.squeeze(aux_logits, [1, 2], name='SpatialSqueeze')
             end_points['AuxLogits'] = aux_logits
-
       # Final pooling and prediction
       with tf.variable_scope('Logits'):
         if global_pool:

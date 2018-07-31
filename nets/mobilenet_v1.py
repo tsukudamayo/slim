@@ -230,6 +230,9 @@ def mobilenet_v1_base(inputs,
   if use_explicit_padding:
     padding = 'VALID'
   with tf.variable_scope(scope, 'MobilenetV1', [inputs]):
+    # # debug print
+    # import sys
+    # print(sys.stdout.write('input %s' % tf.get_default_graph().get_name_scope()))
     with slim.arg_scope([slim.conv2d, slim.separable_conv2d], padding=padding):
       # The current_stride variable keeps track of the output stride of the
       # activations, i.e., the running product of convolution strides up to the

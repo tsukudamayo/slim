@@ -41,7 +41,7 @@ tf.app.flags.DEFINE_integer('num_clones', 1,
                             'epochs')
 
 # change False => True
-tf.app.flags.DEFINE_boolean('clone_on_cpu', True,
+tf.app.flags.DEFINE_boolean('clone_on_cpu', False,
                             'Use CPUs to deploy clones.')
 
 tf.app.flags.DEFINE_integer('worker_replicas', 1, 'Number of worker replicas.')
@@ -575,7 +575,8 @@ def main(_):
         log_every_n_steps=FLAGS.log_every_n_steps,
         save_summaries_secs=FLAGS.save_summaries_secs,
         save_interval_secs=FLAGS.save_interval_secs,
-        sync_optimizer=optimizer if FLAGS.sync_replicas else None)
+        sync_optimizer=optimizer if FLAGS.sync_replicas else None,
+        saver=tf.train.Saver(max_to_keep=None),)
 
 
 if __name__ == '__main__':
