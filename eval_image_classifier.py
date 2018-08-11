@@ -18,8 +18,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 import sys
 import math
+import time
 import tensorflow as tf
 
 from datasets import dataset_factory
@@ -154,6 +156,7 @@ def main(_):
 
     predictions = tf.argmax(logits, 1)
     labels = tf.squeeze(labels)
+    probabilities = tf.nn.softmax(logits)
 
     # Define the metrics:
     names_to_values, names_to_updates = slim.metrics.aggregate_metric_map({
@@ -168,6 +171,8 @@ def main(_):
       op = tf.Print(op, [value], summary_name)
       op = tf.Print(op, [predictions], 'predictions', summarize=FLAGS.batch_size)
       op = tf.Print(op, [labels], 'labels', summarize=FLAGS.batch_size)
+      op = tf.Print(op, [probabilities], 'probabilities',
+                    summarize=dataset.num_classes * FLAGS.batch_size)
       op = tf.Print(op, [slim.metrics.streaming_accuracy(predictions, labels)], 'streaming_accuracy'),
       op = tf.Print(op, [filenames], 'filenames', summarize=FLAGS.batch_size),
       op = tf.Print(op, [categorynames], 'categorynames', summarize=FLAGS.batch_size),
@@ -194,7 +199,16 @@ def main(_):
         num_evals=num_batches,
         # eval_op=list(names_to_updates.values()),
         eval_op=op,
-        variables_to_restore=variables_to_restore)
+        variables_to_restore=variables_to_restore
+    )
+    # slim.evaluation.evaluation_loop(
+    #     master=FLAGS.master,
+    #     checkpoint_dir=os.path.dirname(checkpoint_path),
+    #     logdir=FLAGS.eval_dir,
+    #     eval_op=op,
+    #     eval_interval_secs=3,
+    #     max_number_of_evaluations=10,
+    # )
 
 
 if __name__ == '__main__':

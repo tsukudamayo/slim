@@ -46,6 +46,8 @@ def get_preprocessing(name, is_training=False):
   """
   preprocessing_fn_map = {
       'cifarnet': cifarnet_preprocessing,
+      # change add alexnet_v2
+      'alexnet_v2': inception_preprocessing,
       'inception': inception_preprocessing,
       'inception_v1': inception_preprocessing,
       'inception_v2': inception_preprocessing,
@@ -54,6 +56,9 @@ def get_preprocessing(name, is_training=False):
       'inception_resnet_v2': inception_preprocessing,
       'lenet': lenet_preprocessing,
       'mobilenet_v1': inception_preprocessing,
+      'mobilenet_v1_075': inception_preprocessing,
+      'mobilenet_v1_050': inception_preprocessing,
+      'mobilenet_v1_025': inception_preprocessing,
       'nasnet_mobile': inception_preprocessing,
       'nasnet_large': inception_preprocessing,
       'pnasnet_large': inception_preprocessing,
