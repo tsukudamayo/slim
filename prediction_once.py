@@ -33,7 +33,7 @@ def main(checkpoint_file, eval_image):
     with tf.contrib.slim.arg_scope(mobilenet_v1.mobilenet_v1_arg_scope()):
         logits, end_points = mobilenet_v1.mobilenet_v1(
             images,
-            num_classes=2,
+            num_classes=6,
             is_training=False,
         )
 

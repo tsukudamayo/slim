@@ -63,7 +63,9 @@ def distort_color(image, color_ordering=0, fast_mode=True, scope=None):
   with tf.name_scope(scope, 'distort_color', [image]):
     if fast_mode:
       if color_ordering == 0:
+        # default
         image = tf.image.random_brightness(image, max_delta=32. / 255.)
+        # image = tf.image.random_brightness(image, max_delta=128. / 255.)
         image = tf.image.random_saturation(image, lower=0.5, upper=1.5)
       else:
         image = tf.image.random_saturation(image, lower=0.5, upper=1.5)
@@ -98,8 +100,8 @@ def distort_color(image, color_ordering=0, fast_mode=True, scope=None):
 
 def distorted_bounding_box_crop(image,
                                 bbox,
-                                min_object_covered=0.1,
-                                aspect_ratio_range=(0.75, 1.33),
+                                min_object_covered=0.05,         # default: 0.1
+                                aspect_ratio_range=(0.95, 1.05), # default: (0.75,1.33)
                                 area_range=(0.05, 1.0),
                                 max_attempts=100,
                                 scope=None):
@@ -195,7 +197,7 @@ def preprocess_for_train(image, height, width, bbox,
     image_with_box = tf.image.draw_bounding_boxes(tf.expand_dims(image, 0),
                                                   bbox)
     if add_image_summaries:
-      tf.summary.image('image_with_bounding_boxes', image_with_box)
+      tf.summary.image('image_with_bounding_boxes', image_with_box, 100) # visualize 100
 
     distorted_image, distorted_bbox = distorted_bounding_box_crop(image, bbox)
     # Restore the shape since the dynamic slice based upon the bbox_size loses
@@ -205,7 +207,8 @@ def preprocess_for_train(image, height, width, bbox,
         tf.expand_dims(image, 0), distorted_bbox)
     if add_image_summaries:
       tf.summary.image('images_with_distorted_bounding_box',
-                       image_with_distorted_box)
+                       image_with_distorted_box,
+                       100) # visualize 100
 
     # This resizing operation may distort the images because the aspect
     # ratio is not respected. We select a resize method in a round robin
@@ -221,7 +224,8 @@ def preprocess_for_train(image, height, width, bbox,
 
     if add_image_summaries:
       tf.summary.image('cropped_resized_image',
-                       tf.expand_dims(distorted_image, 0))
+                       tf.expand_dims(distorted_image, 0),
+                       100) # visualize 100
 
     # Randomly flip the image horizontally.
     distorted_image = tf.image.random_flip_left_right(distorted_image)
@@ -235,7 +239,8 @@ def preprocess_for_train(image, height, width, bbox,
 
     if add_image_summaries:
       tf.summary.image('final_distorted_image',
-                       tf.expand_dims(distorted_image, 0))
+                       tf.expand_dims(distorted_image, 0),
+                       100) # visualize 100
     distorted_image = tf.subtract(distorted_image, 0.5)
     distorted_image = tf.multiply(distorted_image, 2.0)
     return distorted_image
