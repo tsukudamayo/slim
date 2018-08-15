@@ -33,9 +33,9 @@ FLAGS = tf.app.flags.FLAGS
 # constants #
 #-----------#
 _NUM_CLASSES = 3
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_256_manually_select_20180814_ep_tm_cu_x10'
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_256_manually_select_20180814_ep_tm_cu_x20'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180814_food_256_manually_select_ep_tm_cu_x10_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180814_food_256_manually_select_ep_tm_cu_x20_mobilenet_v1_1_224_finetune'
 _CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
@@ -140,9 +140,9 @@ def main():
       # #--------------------#
       # # property of opencv #
       # #--------------------#
-      # width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-      # height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-      # fps = cap.get(cv2.CAP_PROP_FPS)
+      width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+      height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+      fps = cap.get(cv2.CAP_PROP_FPS)
       # brightness = cap.get(cv2.CAP_PROP_BRIGHTNESS)
       # contrast = cap.get(cv2.CAP_PROP_CONTRAST)
       # saturation = cap.get(cv2.CAP_PROP_SATURATION)
@@ -169,9 +169,9 @@ def main():
       # #----------------#
       # # property debug #
       # #----------------#
-      # print('width', width)
-      # print('height', height)
-      # print('fps', fps)
+      print('width', width)
+      print('height', height)
+      print('fps', fps)
       # print('brightness', brightness)
       # print('contrast', contrast)
       # print('saturation', saturation)
