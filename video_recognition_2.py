@@ -33,7 +33,7 @@ FLAGS = tf.app.flags.FLAGS
 # constants #
 #-----------#
 _NUM_CLASSES = 3
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/20180814_food_256_manually_select_ep_tm_cu_x10_mobile'
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_256_manually_select_20180814_ep_tm_cu_x10'
 _LABEL_DATA = 'labels.txt'
 _CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180814_food_256_manually_select_ep_tm_cu_x10_mobilenet_v1_1_224_finetune'
 _CHECKPOINT_FILE = 'model.ckpt-20000'
@@ -171,12 +171,22 @@ def main():
   width = 1920
   height = 1080
 
-  threshold = int(224 / 2) # default (224 / 2)
-  margin = 10              # not to capture bounding box
+  # define ROI
+  threshold = int(224 / 2)                         # default (224 / 2)
+  margin = 10                                      # not to capture bounding box
 
-  center_width = int(width / 2)
-  center_height = int(height / 2)
-  
+  center = int(width * 5.5/10)
+  center1_width = int(center - threshold) - margin # ROI1 center x
+  center2_width = int(center + threshold) + margin # ROI2 center x
+  center_height = int(height / 2)                  # ROI1,2 center y
+
+  # print('center1_width :', center1_width)
+  # print('center2_width :', center2_width)
+  # print('center_height :', center_height)
+
+  t1 = time.time()
+  print('start ~ with.tf.Session :', t1 - t0)
+
   
   with tf.Session() as sess:
     cap = cv2.VideoCapture(0)
@@ -186,46 +196,77 @@ def main():
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
     # start video capture
+    count = 0
+    t2 = time.time()
+    print('with.tf.Session ~ While :', t2 - t1)
+    print('all :', t2 - t0)
     while(True):
+      t3 = time.time()
       ret, frame = cap.read()
       
       cv2.rectangle(
           frame,
-          ((center_width-threshold-margin),(center_height-threshold-margin)),
-          ((center_width+threshold+margin),(center_height+threshold+margin)),
+          ((center1_width-threshold-margin),(center_height-threshold-margin)),
+          ((center1_width+threshold+margin),(center_height+threshold+margin)),
+          (0,0,255),
+          3
+      )
+      cv2.rectangle(
+          frame,
+          ((center2_width-threshold-margin),(center_height-threshold-margin)),
+          ((center2_width+threshold+margin),(center_height+threshold+margin)),
           (0,0,255),
           3
       )
       cv2.imshow('frame', frame)
-      cv2.setMouseCallback('frame', print_coordinates)
+      # cv2.setMouseCallback('frame', print_coordinates)
 
       # ROI
-      bbox = frame[center_height-threshold:center_height+threshold,
-                   center_width-threshold:center_width+threshold]
-      bbox = cv2.resize(bbox,(224,224))
+      bbox1 = frame[center_height-threshold:center_height+threshold,
+                    center1_width-threshold:center1_width+threshold]
+      bbox2 = frame[center_height-threshold:center_height+threshold,
+                    center2_width-threshold:center2_width+threshold]
+      bbox1 = cv2.resize(bbox1,(224,224))
+      bbox2 = cv2.resize(bbox2,(224,224))
 
       # save image of bounding box
       now = datetime.now()
       seconds = now.strftime('%Y%m%d_%H%M%S')
-      cv2.imwrite(os.path.join(output_dir, seconds) + '.png', bbox)
-      bbox = bbox / 128 - 1
-      bbox = np.expand_dims(bbox, 0)
+      cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox1.png', bbox1)
+      cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox2.png', bbox2)
+      bbox1 = bbox1 / 128 - 1
+      bbox2 = bbox2 / 128 - 1
+      bbox1 = np.expand_dims(bbox1, 0)
+      bbox2 = np.expand_dims(bbox2, 0)
 
-      # evaluation 
-      saver.restore(sess, checkpoint_file)
-      x = end_points['Predictions'].eval(
-          feed_dict={images: bbox}
-      )
-      
-      # output top predicitons
-      print(sys.stdout.write(
-          'Top 1 prediction: %d %s %f'
-          % (x.argmax(), category_map[x.argmax()], x.max())
-      ))
-      # output all class probabilities
-      for i in range(x.shape[1]):
-        print(sys.stdout.write('%s : %s' % (category_map[i], x[0][i])))
-      
+      # evaluation
+      log = str()
+      all_bbox = [bbox1, bbox2]
+      bbox_names = ['left', 'right']
+      for bbox, bbox_name in zip(all_bbox, bbox_names):
+        saver.restore(sess, checkpoint_file)
+        x = end_points['Predictions'].eval(
+            feed_dict={images: bbox}
+        )
+        
+        # # output top predicitons
+        # if count % 10 == 0:
+        #   if bbox_name == 'left':
+        #       print('*'*20 + 'LEFT' + '*'*20)
+        #   elif bbox_name == 'right':
+        #       print('*'*20 + 'RIGHT' + '*'*20)
+        #   print(sys.stdout.write(
+        #       '%s Top 1 prediction: %d %s %f'
+        #       % (str(bbox_name), x.argmax(), category_map[x.argmax()], x.max())
+        #   ))
+        # # output all class probabilities
+        #   for i in range(x.shape[1]):
+        #     print(sys.stdout.write('%s : %s' % (category_map[i], x[0][i])))
+        t4 = time.time()
+        print('loop seconds :', t4 - t3)
+            
+      count += 1
+
       if cv2.waitKey(1) & 0xFF == ord('q'):
         break
     

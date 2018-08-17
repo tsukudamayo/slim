@@ -100,7 +100,7 @@ def distort_color(image, color_ordering=0, fast_mode=True, scope=None):
 
 def distorted_bounding_box_crop(image,
                                 bbox,
-                                min_object_covered=0.05,         # default: 0.1
+                                min_object_covered=0.1,         # default: 0.1
                                 aspect_ratio_range=(0.95, 1.05), # default: (0.75,1.33)
                                 area_range=(0.05, 1.0),
                                 max_attempts=100,

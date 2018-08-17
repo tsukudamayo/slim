@@ -38,7 +38,7 @@ from datasets import dataset_utils
 
 # The URL where the Flowers data can be downloaded.
 _DATA_URL = '/media/panasonic/644E9C944E9C611A/tmp/data/img'
-_DOWNROAD_DIR = 'food_google_search_256_manually_select_20180814_tm_ep_cu_x_20'
+_DOWNROAD_DIR = 'food_dossari_20180816_validation'
 
 # The number of images in the validationset.
 _NUM_VALIDATION = 0
@@ -116,7 +116,7 @@ def _convert_dataset(split_name, filenames, class_names_to_ids, dataset_dir):
       (integers).
     dataset_dir: The directory where the converted datasets are stored.
   """
-  assert split_name in ['train']
+  assert split_name in ['validation']
 
   num_per_shard = int(math.ceil(len(filenames) / float(_NUM_SHARDS)))
 
@@ -163,7 +163,7 @@ def _convert_dataset(split_name, filenames, class_names_to_ids, dataset_dir):
 
 
 def _dataset_exists(dataset_dir):
-  for split_name in ['train']:
+  for split_name in ['validation']:
     for shard_id in range(_NUM_SHARDS):
       output_filename = _get_dataset_filename(
           dataset_dir, split_name, shard_id)
@@ -192,15 +192,15 @@ def run(dataset_dir):
   # Divide intot rain and test:
   random.seed(_RANDOM_SEED)
   random.shuffle(photo_filenames)
-  training_filenames = photo_filenames[_NUM_VALIDATION:]
-  # validation_filenames = photo_filenames[_NUM_VALIDATION:]
+  # training_filenames = photo_filenames[_NUM_VALIDATION:]
+  validation_filenames = photo_filenames[_NUM_VALIDATION:]
   # validation_filenames = photo_filenames[:_NUM_VALIDATION]
 
   # First, convert the training and validation sets.
-  _convert_dataset('train', training_filenames, class_names_to_ids,
-                   dataset_dir)
-  # _convert_dataset('validation', validation_filenames, class_names_to_ids,
+  # _convert_dataset('train', training_filenames, class_names_to_ids,
   #                  dataset_dir)
+  _convert_dataset('validation', validation_filenames, class_names_to_ids,
+                   dataset_dir)
 
   # Finally, write the labels file:
   labels_to_class_names = dict(zip(range(len(class_names)), class_names))
