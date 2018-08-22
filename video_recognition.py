@@ -6,6 +6,7 @@ import os
 import sys
 import time
 from datetime import datetime
+import urllib.request
 
 import numpy as np
 import cv2
@@ -32,13 +33,24 @@ FLAGS = tf.app.flags.FLAGS
 #-----------#
 # constants #
 #-----------#
-_NUM_CLASSES = 3
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/20180814_food_256_manually_select_ep_tm_cu_x10_mobile'
+_URL = 'http://localhost:3000'
+
+_NUM_CLASSES = 2
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/flying_pan_20180809_white_and_black_x10'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180814_food_256_manually_select_ep_tm_cu_x10_mobilenet_v1_1_224_finetune'
-_CHECKPOINT_FILE = 'model.ckpt-20000'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180809_flying_pan_white_and_black_x10_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_FILE = 'model.ckpt-50000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
+
+
+def send_get_request(url, key, value):
+    req = urllib.request.Request(
+        '{}?{}'.format(
+            url,
+            urllib.parse.urlencode({key: value}))
+    )
+    urllib.request.urlopen(req)
 
 
 def convert_label_files_to_dict(data_dir, label_file):
@@ -225,6 +237,9 @@ def main():
       # output all class probabilities
       for i in range(x.shape[1]):
         print(sys.stdout.write('%s : %s' % (category_map[i], x[0][i])))
+
+      # # send GET request
+      # send_get_request(_URL, 'gradient', category_map[x.argmax()])
       
       if cv2.waitKey(1) & 0xFF == ord('q'):
         break

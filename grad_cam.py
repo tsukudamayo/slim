@@ -39,15 +39,15 @@ FLAGS = tf.app.flags.FLAGS
 # constants #
 #-----------#
 _NUM_CLASSES = 3
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_224_keep_aspect_ratio_20180809_3class_x10_share_range_0'
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_224_dossari_20180815_cu_ep_tm_x10'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180809_food_224_keep_aspect_ratio_3class_x10_share_range_0_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180815_food_dossari_cu_ep_tm_x10_mobilenet_v1_1_224_finetune'
 _CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
 _MODEL_NAME = 'mobilenet_v1'
-fname = 'IMG_1692.jpg'
-gradient_name = 'eggplant'
+fname = 'data/tomato_real_002.png'
+gradient_name = 'tomato'
 
 
 def load_image(path, normalize=True):

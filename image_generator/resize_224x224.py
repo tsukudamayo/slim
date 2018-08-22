@@ -15,7 +15,6 @@ def main():
     #----------------------#
     print(os.listdir(image_dir))
     sub_directories = os.listdir(image_dir)
-    
     if os.path.isdir(target_dir) is False:
         os.mkdir(target_dir)
         for sub_directory in sub_directories:
