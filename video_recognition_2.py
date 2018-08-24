@@ -128,10 +128,9 @@ def settings_property():
 
 
 def main():
+  t0 = time.time()
   now = datetime.now()
   today = now.strftime('%Y%m%d')
-  
-  t0 = time.time()
 
   output_dir = os.path.join(_LOG_DIR, today)
   if os.path.isdir(output_dir) is False:
@@ -199,7 +198,7 @@ def main():
     count = 0
     t2 = time.time()
     print('with.tf.Session ~ While :', t2 - t1)
-    print('all :', t2 - t0)
+    print('start ~ while :', t2 - t0)
     while(True):
       t3 = time.time()
       ret, frame = cap.read()

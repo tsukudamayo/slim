@@ -7,6 +7,7 @@ import sys
 import time
 from datetime import datetime
 import threading
+import requests
 
 import numpy as np
 import cv2
@@ -33,13 +34,24 @@ FLAGS = tf.app.flags.FLAGS
 #-----------#
 # constants #
 #-----------#
+_URL = 'http://localhost:8080/update_recipe'
 _NUM_CLASSES = 3
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_256_manually_select_20180814_ep_tm_cu_x10'
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_224_dossari_20180815_cu_ep_tm_x10'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180814_food_256_manually_select_ep_tm_cu_x10_mobilenet_v1_1_224_finetune'
+_DB_DATA = 'labels_db.txt'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180815_food_dossari_cu_ep_tm_x10_mobilenet_v1_1_224_finetune'
 _CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
+
+
+def send_get_request(url, key, value):
+    req = urllib.request.Request(
+        '{}?{}'.format(
+            url,
+            urllib.parse.urlencode({key: value}))
+    )
+    urllib.request.urlopen(req)
 
 
 def convert_label_files_to_dict(data_dir, label_file):
@@ -54,7 +66,12 @@ def convert_label_files_to_dict(data_dir, label_file):
     # label file convert into python dictionary
     for line in lines:
         key_value = line.split(':')
-        key = int(key_value[0])
+        try:
+            key = int(key_value[0])
+        except KeyError:
+            key = key_value[0]
+        except ValueError:
+            key = str(key_value[0])
         value = key_value[1].split()[0] # delete linefeed
         category_map[key] = value
     
@@ -134,13 +151,18 @@ class detection_thread(threading.Thread):
                bbox2,
                output_dir,
                checkpoint_file,
-               category_map,):
+               category_map,
+               db_map,
+               previous_predictions,):
     super(detection_thread, self).__init__()
     self.bbox1 = bbox1
     self.bbox2 = bbox2
     self.output_dir = output_dir
     self.checkpoint_file = checkpoint_file
     self.category_map = category_map
+    self.db_map = db_map
+    self.previous_predictions = previous_predictions
+    self.current_predictions = []
     
   def run(self):
     tf.reset_default_graph()
@@ -187,9 +209,41 @@ class detection_thread(threading.Thread):
             '%s Top 1 prediction: %d %s %f'
             % (str(bbox_name), x.argmax(), self.category_map[x.argmax()], x.max())
         ))
+
         # output all class probabilities
         for i in range(x.shape[1]):
           print(sys.stdout.write('%s : %s' % (self.category_map[i], x[0][i])))
+
+        pred_id = self.db_map[self.category_map[x.argmax()]]
+
+        self.current_predictions.append(pred_id)
+
+        # send GET request if prediction is changed
+      # send_get_request(_URL, 'gradient', self.category_map[x.argmax()])
+      # print('send GET')
+      # print('time :', datetime.now().strftime('%Y%m%d:%H%M%S'))
+      # prediction_category = x.argmax()
+      # requests.get('http://localhost:8080/update_recipe?ingredient_ids=42,46&ingredient_ids2=43,617&flying_pan=true&page_index=0')
+      print('self.previous_predictions', self.previous_predictions)
+      print('self.current_predictions', self.current_predictions)
+      print(self.previous_predictions == self.current_predictions)
+      if self.previous_predictions != self.current_predictions:
+        print('change')
+        t_query_0 = time.time()
+        query = 'http://localhost:8080/update_recipe?ingredient_ids1={}&ingredient_ids2={}&flying_pan=true'.format(
+            self.current_predictions[0],
+            self.current_predictions[1],
+        )
+        # # query = 'http://localhost:3000?ingredient_ids={0}&ingredient_ids2={1}&flying_pan=true'.format(
+        # #     current_predictions[0],
+        # #     current_predictions[1],
+        # # )
+        requests.get(query)
+        t_query_1 = time.time()
+        print('request time :', t_query_1 - t_query_0)
+      else:
+        print('not change')
+        pass
 
 
 def main():
@@ -207,10 +261,8 @@ def main():
   #--------------#
   checkpoint_file = os.path.join(_CHECKPOINT_PATH, _CHECKPOINT_FILE)
   category_map = convert_label_files_to_dict(_DATA_DIR, _LABEL_DATA)
+  db_map = convert_label_files_to_dict(_DATA_DIR, _DB_DATA)
 
-  # ema = tf.train.ExponentialMovingAverage(0.999)
-  # vars = ema.variables_to_restore()
-  
   #-----------------------------#
   # videocapture and prediction #
   #-----------------------------#
@@ -229,10 +281,6 @@ def main():
   # print('center1_width :', center1_width)
   # print('center2_width :', center2_width)
   # print('center_height :', center_height)
-
-  t1 = time.time()
-  print('start ~ with.tf.Session :', t1 - t0)
-
   
   cap = cv2.VideoCapture(0)
 
@@ -240,8 +288,13 @@ def main():
   cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
   cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
+  # requests.get('http://localhost:8080/update_recipe?ingredient_ids1=42,46&ingredient_ids2=43,617&frying_pan=true&page_index=0')
+  
   # start video capture
   count = 0
+  previous_predictions = []
+  t1 = time.time()
+  print('start ~ while :', t1 - t0)
   while(True):
     t3 = time.time()
     ret, frame = cap.read()
@@ -278,15 +331,18 @@ def main():
     cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox1.png', bbox1)
     cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox2.png', bbox2)
 
-    if count % 25 == 0:
+    if count % 5 == 0:
       thread = detection_thread(
           bbox1,
           bbox2,
           output_dir,
           checkpoint_file,
           category_map,
-      )
+          db_map,
+          previous_predictions,
+        )
       thread.start()
+      previous_predictions = thread.current_predictions
     else:
       pass    
 

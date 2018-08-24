@@ -35,11 +35,11 @@ FLAGS = tf.app.flags.FLAGS
 #-----------#
 _URL = 'http://localhost:3000'
 
-_NUM_CLASSES = 2
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/flying_pan_20180809_white_and_black_x10'
+_NUM_CLASSES = 3
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_256_manually_select_20180814_ep_tm_cu'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180809_flying_pan_white_and_black_x10_mobilenet_v1_1_224_finetune'
-_CHECKPOINT_FILE = 'model.ckpt-50000'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180815_food_dossari_cu_ep_tm_x10_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
 
@@ -197,6 +197,9 @@ def main():
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
+    # initalize prediction category
+    prediction_category = 9999 # this number is not include category map
+
     # start video capture
     while(True):
       ret, frame = cap.read()
@@ -228,18 +231,23 @@ def main():
       x = end_points['Predictions'].eval(
           feed_dict={images: bbox}
       )
-      
-      # output top predicitons
-      print(sys.stdout.write(
-          'Top 1 prediction: %d %s %f'
-          % (x.argmax(), category_map[x.argmax()], x.max())
-      ))
-      # output all class probabilities
-      for i in range(x.shape[1]):
-        print(sys.stdout.write('%s : %s' % (category_map[i], x[0][i])))
 
-      # # send GET request
-      # send_get_request(_URL, 'gradient', category_map[x.argmax()])
+      if prediction_category != x.argmax():
+        # output top predicitons
+        print(sys.stdout.write(
+            'Top 1 prediction: %d %s %f'
+            % (x.argmax(), category_map[x.argmax()], x.max())
+        ))
+        # output all class probabilities
+        for i in range(x.shape[1]):
+          print(sys.stdout.write('%s : %s' % (category_map[i], x[0][i])))
+        
+        # send GET request if prediction is changed
+
+        send_get_request(_URL, 'gradient', category_map[x.argmax()])
+        print('send GET')
+        print('time :', datetime.now().strftime('%Y%m%d:%H%M%S'))
+        prediction_category = x.argmax()
       
       if cv2.waitKey(1) & 0xFF == ord('q'):
         break
