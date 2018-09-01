@@ -24,12 +24,13 @@ FLAGS = tf.app.flags.FLAGS
 # constants #
 #-----------#
 _NUM_CLASSES = 3
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_224_keep_aspect_ratio_20180809_3class_x10_share_range_0'
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_dossari_20180815_cu_ep_tm_camera2'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180809_food_224_keep_aspect_ratio_3class_x10_share_range_0_mobilenet_v1_1_224_finetune'
-_CHECKPOINT_FILE = 'model.ckpt-20000'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180815_food_dossari_cu_ep_tm_camera2_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_FILE = 'model.ckpt-3551'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
+fname = '20180815_181841.png'
 
 
 def convert_label_files_to_dict(data_dir, label_file):
@@ -66,7 +67,7 @@ def main():
   #--------------#
   checkpoint_file = os.path.join(_CHECKPOINT_PATH, _CHECKPOINT_FILE)
   category_map = convert_label_files_to_dict(_DATA_DIR, _LABEL_DATA)
-  fname = 'broccoli_20.png'
+
   eval_image = Image.open(fname)
   plt.imshow(eval_image)
   plt.show()
@@ -76,7 +77,7 @@ def main():
   file_input = tf.read_file(fname)
   input = tf.image.decode_png(tf.read_file(file_input), channels=3)
   images = tf.expand_dims(input, 0)
-  images = tf.cast(images, tf.float32)/128 - 1
+  # images = tf.cast(images, tf.float32)/128 - 1
   images.set_shape((None, None, None, 3))
   images = tf.image.resize_images(images, (224,224))
 

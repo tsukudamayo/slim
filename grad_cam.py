@@ -39,15 +39,15 @@ FLAGS = tf.app.flags.FLAGS
 # constants #
 #-----------#
 _NUM_CLASSES = 3
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_224_keep_aspect_ratio_20180809_3class_x10_share_range_0'
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_224_dossari_20180815_cu_ep_tm_x10'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180809_food_224_keep_aspect_ratio_3class_x10_share_range_0_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180815_food_dossari_cu_ep_tm_x10_mobilenet_v1_1_224_finetune'
 _CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
 _MODEL_NAME = 'mobilenet_v1'
-
-
+fname = 'data/tomato_real_002.png'
+gradient_name = 'tomato'
 
 
 def load_image(path, normalize=True):
@@ -70,20 +70,27 @@ def load_image(path, normalize=True):
 
 
 def visualize(image, conv_output, conv_grad, gb_viz):
-  output = conv_output
-  grads_val = conv_grad
+  image = np.squeeze(image, 0)
+  output = np.squeeze(conv_output, 0)
+  grads_val = np.squeeze(conv_grad, 0)
+  gb_viz = np.squeeze(gb_viz, 0)
   print('grads_val shape :', grads_val.shape)
   print('gb_viz shape :', gb_viz.shape)
 
   weights = np.mean(grads_val, axis=(0,1))
+  print('weights', weights.shape)
   cam = np.zeros(output.shape[0:2], dtype=np.float32)
+  print('cam ', cam.shape)
 
   # taking a waighted average
   for i, w in enumerate(weights):
+    # print('i', i)
+    # print('w', w)
+    # print('cam', cam)
     cam += w * output[:,:,i]
 
   # passing throught ReLU
-  cam = np.maxmum(cam, 0)
+  cam = np.maximum(cam, 0)
   cam = cam / np.max(cam)
   cam = skimage.transform.resize(cam, (224,224), preserve_range=True)
 
@@ -95,36 +102,41 @@ def visualize(image, conv_output, conv_grad, gb_viz):
   cam_heatmap = cv2.cvtColor(cam_heatmap, cv2.COLOR_BGR2RGB)
 
   fig = plt.figure()
-  ax = fig.add_subplot(111)
+  ax = fig.add_subplot(121)
   imgplot = plt.imshow(img)
   ax.set_title('input_image')
 
-  fig = plt.figure(figsize=(12, 16))
-  ax = fig.add_subplot(131)
-  imgplot = plt.imshow(cam_heatmap)
-  ax.set_title('Grad-CAM')
+  # TODO guided back propagation
+  # ax = fig.add_subplot(132)
+  # imgplot = plt.imshow(cam_heatmap)
+  # ax.set_title('Grad-CAM')
 
-  gb_viz = np.dstack((
-      gb_viz[:,:,0],
-      gb_viz[:,:,1],
-      gb_viz[:,:,2],
-  ))
-  gb_viz -= np.min(gb_viz)
-  gb_viz /= gb_viz.max()
+  # gb_viz = np.dstack((
+  #     gb_viz[:,:,0],
+  #     gb_viz[:,:,1],
+  #     gb_viz[:,:,2],
+  # ))
+  # gb_viz -= np.min(gb_viz)
+  # gb_viz /= gb_viz.max()
 
-  ax = fig.add_subplot(132)
-  imgplot = plt.imshow(gb_viz)
-  ax.set_title('guided backpropagation')
+  # ax = fig.add_subplot(132)
+  # imgplot = plt.imshow(gb_viz)
+  # ax.set_title('guided backpropagation')
 
-  gb_gb = np.dstack((
-      gb_viz[:,:,0] * cam,
-      gb_viz[:,:,1] * cam,
-      gb_viz[:,:,2] * cam,
-  ))
+  # gb_gb = np.dstack((
+  #     gb_viz[:,:,0] * cam,
+  #     gb_viz[:,:,1] * cam,
+  #     gb_viz[:,:,2] * cam,
+  # ))
 
-  ax = fig.add_subplot(133)
-  imgplot = plt.imshow(gb_gb)
-  ax.set_title('guided Grad-CAM')
+  # ax = fig.add_subplot(223)
+  # imgplot = plt.imshow(gb_gb)
+  # ax.set_title('guided Grad-CAM')
+
+  superimposed_img = cam_heatmap + img
+  ax = fig.add_subplot(122)
+  plt.imshow(superimposed_img)
+  plt.title('guided Grad-CAM superimposed')
 
   plt.show()
 
@@ -169,7 +181,6 @@ def main():
     with eval_graph.gradient_override_map({'Relu': 'Guidedrelu'}):
       
       # tf.reset_default_graph()
-      fname = 'tomato_18.png'
       
       file_input = tf.read_file(fname)
       input = tf.image.decode_png(tf.read_file(file_input), channels=3)
@@ -205,8 +216,9 @@ def main():
 
   eval_image = load_image(fname, normalize=False)
   eval_image = eval_image.reshape((1,224,224,3))
-  
-  eval_label = np.array([1 if i == 2 else 0 for i in range(3)])
+
+  # category_number = category_map[gradient_name]
+  eval_label = np.array([1 if i == 0 else 0 for i in range(3)])
   eval_label = eval_label.reshape(1, -1)
 
   #------------#
@@ -229,15 +241,18 @@ def main():
     # visualize hidden layer
     # print('end_points\n', end_points)
 
-    gd_grad_val, target_conv_layer_val, target_conv_layer_grad_val = sess.run(
+    gb_grad_val, target_conv_layer_val, target_conv_layer_grad_val = sess.run(
         [gb_grad, target_conv_layer, target_conv_layer_grad],
         feed_dict={images: eval_image, labels: eval_label}
-    )
+        )
+    print('gb_grad_val.shape', gb_grad_val.shape)
+    print('target_conv_layer_val.shape', target_conv_layer_grad_val.shape)
+    print('target_conv_layer_grad_val.shape', target_conv_layer_grad_val.shape)
 
-    visualize(fname,
+    visualize(eval_image,
               target_conv_layer_val,
               target_conv_layer_grad_val,
-              gb_grad)
+              gb_grad_val)
 
 
 if __name__ == '__main__':
