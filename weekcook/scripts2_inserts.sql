@@ -1,0 +1,15 @@
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (1, 42, 'tomato', 'トマト');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (2, 46, 'tomato', 'ミニトマト');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (3, 181, 'tomato', 'トマトカン');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (4, 182, 'tomato', 'トマトミズニカン');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (5, 504, 'tomato', 'フルーツトマト');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (6, 571, 'tomato', 'ダイストマト');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (7, 602, 'tomato', 'ミニトマトアカ');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (8, 774, 'tomato', 'ホールトマトカン');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (9, 11, 'broccoli', 'ブロッコリー');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (10, 450, 'broccoli', 'ブロッコリーコフサ');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (11, 699, 'broccoli', 'ブロッコリースプラウト');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (12, 43, 'aubergine', 'ナス');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (13, 617, 'aubergine', 'ナガナス');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (14, 700, 'aubergine', 'ミズナス');
+INSERT INTO ingredient_name_map (name_id, ingredient_id, search_key, ingredient_kana) VALUES (15, 36, 'cucumber', 'キュウリ');

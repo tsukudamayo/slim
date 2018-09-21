@@ -1,0 +1,5 @@
+INSERT INTO Defrosting_Methods (defrosting_methods_id,defrosting_methods,created_id,created_at,updated_id,updated_at) VALUES ('1','解凍なし','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Defrosting_Methods (defrosting_methods_id,defrosting_methods,created_id,created_at,updated_id,updated_at) VALUES ('2','自然解凍','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Defrosting_Methods (defrosting_methods_id,defrosting_methods,created_id,created_at,updated_id,updated_at) VALUES ('3','熱湯解凍','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Defrosting_Methods (defrosting_methods_id,defrosting_methods,created_id,created_at,updated_id,updated_at) VALUES ('4','流水解凍','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Defrosting_Methods (defrosting_methods_id,defrosting_methods,created_id,created_at,updated_id,updated_at) VALUES ('5','レンジで加熱','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');

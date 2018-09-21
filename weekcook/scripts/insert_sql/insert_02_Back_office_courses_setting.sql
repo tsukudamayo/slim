@@ -1,0 +1,7 @@
+INSERT INTO Back_office_courses_setting (course_id,recommend_dish_pattern,created_id,created_at,updated_id,updated_at) VALUES ('19','5','11','2017-08-29 17:03:27.000','11','2017-08-29 17:03:27.000');
+INSERT INTO Back_office_courses_setting (course_id,recommend_dish_pattern,created_id,created_at,updated_id,updated_at) VALUES ('27','6','11','2017-12-06 11:57:13.000','11','2017-12-06 11:57:13.000');
+INSERT INTO Back_office_courses_setting (course_id,recommend_dish_pattern,created_id,created_at,updated_id,updated_at) VALUES ('28','5','6','2017-08-25 14:03:57.000','6','2017-08-25 14:03:57.000');
+INSERT INTO Back_office_courses_setting (course_id,recommend_dish_pattern,created_id,created_at,updated_id,updated_at) VALUES ('29',NULL,'6','2017-09-07 13:31:48.000','6','2017-09-07 13:31:48.000');
+INSERT INTO Back_office_courses_setting (course_id,recommend_dish_pattern,created_id,created_at,updated_id,updated_at) VALUES ('30',NULL,'15','2018-03-20 15:23:25.000','15','2018-03-20 15:23:25.000');
+INSERT INTO Back_office_courses_setting (course_id,recommend_dish_pattern,created_id,created_at,updated_id,updated_at) VALUES ('31','0','15','2018-04-06 12:06:36.000','15','2018-04-06 12:06:36.000');
+INSERT INTO Back_office_courses_setting (course_id,recommend_dish_pattern,created_id,created_at,updated_id,updated_at) VALUES ('32',NULL,'15','2018-06-07 15:49:24.000','15','2018-06-07 15:49:24.000');

@@ -1,0 +1,4 @@
+INSERT INTO Dish_Types (dish_type_id,dish_type_name,dish_type_alias,created_id,created_at,updated_id,updated_at) VALUES ('1','主菜・主食','main','1','2016-11-10 10:14:29.000','1','2016-11-10 10:14:29.000');
+INSERT INTO Dish_Types (dish_type_id,dish_type_name,dish_type_alias,created_id,created_at,updated_id,updated_at) VALUES ('2','副菜','sub','1','2016-11-10 10:14:29.000','1','2016-11-10 10:14:29.000');
+INSERT INTO Dish_Types (dish_type_id,dish_type_name,dish_type_alias,created_id,created_at,updated_id,updated_at) VALUES ('3','汁物','soup','1','2016-11-10 10:14:29.000','1','2016-11-10 10:14:29.000');
+INSERT INTO Dish_Types (dish_type_id,dish_type_name,dish_type_alias,created_id,created_at,updated_id,updated_at) VALUES ('4','デザート','desert','1','2016-11-10 10:14:29.000','1','2016-11-10 10:14:29.000');

@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script type='text/javascript' src='_lib/js/jquery-2.2.4.min.js'></script>
+    <script type='text/javascript' src='_lib/js/vue.min.js'></script>
+    <link rel='stylesheet', href='_lib/css/bootstrap.min.css'>
+</head>
+<body>
+    <div id='app'>
+        <button v-on:click='update_recipe(0);'>update_recipe テスト</button>
+        <button v-on:click='connect();'>connect テスト</button>
+        <div id='partial_view'>
+        </div>
+    </div>
+    <script type='text/javascript'>
+        new Vue({
+            el: '#app',
+            data: {
+                test: 'TEST',
+                items: [
+                    'a',
+                    'b',
+                    'c',
+                    'd',
+                    'e'
+                ]
+            },
+            methods: {
+                update_recipe: function (page_index) {
+                    var url = "http://localhost:8080/update_recipe?ingredient_ids1=42,46&ingredient_ids2=43,617&frying_pan=true&page_index=" + page_index;
+                    $.get(url, function (data, status) {
+                        console.log('response');
+                        console.log(data);
+                        $("#partial_view").html(data);
+                    });
+                },
+                connect: function () {
+                    var websocket = new WebSocket('ws://localhost:8080');
+                    //console.log(websocket);
+                    websocket.onopen = function (e) {
+                        console.log('ws.onopen (client)');
+                    };
+                    websocket.onclose = function (e) {
+                        console.log('ws.onclose (client)');
+                    };
+                    websocket.onmessage = function (e) {
+                        // サーバ push を検出
+                        //console.log('ws.onmessage (client) : ' + e.data);
+                        // 部分ビューを更新
+                        $("#partial_view").html(e.data);
+                    };
+                    websocket.onerror = function (e) {
+                        console.log('ws.onerror (client) : ' + e.data);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

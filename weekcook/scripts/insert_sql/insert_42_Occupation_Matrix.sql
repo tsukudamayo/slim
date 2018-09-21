@@ -1,0 +1,13 @@
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('1','1','3','1','2014-04-10 00:00:00.000','1','2016-12-20 17:39:36.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('2','2','3','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('3','3','1','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('4','4','1','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('5','5','1','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('6','6','2','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('7','7','4','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('8','8','5','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('9','9','3','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('10','10','3','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('11','11','3','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('12','12','3','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Occupation_Matrix (occupation_matrix_id,classification_id,resource_id,created_id,created_at,updated_id,updated_at) VALUES ('13','13','1','1','2017-10-24 18:10:40.023','1','2017-10-24 18:10:40.023');

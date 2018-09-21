@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script type='text/javascript' src='_lib/jquery-2.2.4.min.js'></script>
+</head>
+<body>
+    <button onclick='update_recipe();'>update_recipe テスト</button>
+    <button onclick='get_image();'>get_image テスト</button>
+    <div id='partial_view'>
+    </div>
+
+    <script type='text/javascript'>
+        function get_image() {
+            var url = 'http://localhost:8080/get_image';
+            $.get(url, function (data, status) {
+                console.log(data);
+                // ブラウザにレンダリングさせる -> 再リクエストを発生させる
+                $("#partial_view").html(data);
+            });
+        }
+
+        function update_recipe() {
+            var url = "http://localhost:8080/update_recipe?ingredient_name1=tomato&ingredient_name2=aubergine";
+            $.get(url, function (data, status) {
+                console.log('response');
+                console.log(data);
+                alert(data);
+            });
+        }
+    </script>
+</body>
+</html>

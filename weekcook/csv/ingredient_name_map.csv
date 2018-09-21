@@ -1,0 +1,16 @@
+name_id,ingredient_id,search_key,ingredient_kana
+1,42,tomato,トマト
+2,46,tomato,ミニトマト
+3,181,tomato,トマトカン
+4,182,tomato,トマトミズニカン
+5,504,tomato,フルーツトマト
+6,571,tomato,ダイストマト
+7,602,tomato,ミニトマトアカ
+8,774,tomato,ホールトマトカン
+9,11,broccoli,ブロッコリー
+10,450,broccoli,ブロッコリーコフサ
+11,699,broccoli,ブロッコリースプラウト
+12,43,aubergine,ナス
+13,617,aubergine,ナガナス
+14,700,aubergine,ミズナス
+15,36,cucumber,キュウリ

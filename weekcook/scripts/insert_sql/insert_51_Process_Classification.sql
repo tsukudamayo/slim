@@ -1,0 +1,13 @@
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('1','炒める','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('2','焼く','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('3','野菜カット','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('4','肉魚下処理','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('5','その他手作業','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('6','レンジ','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('7','グリルする','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('8','寝かせる','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('9','煮る','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('10','茹でる','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('11','蒸す','1','2014-04-10 00:00:00.000','1','2014-11-10 17:12:39.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('12','揚げる','1','2014-11-10 17:12:47.000','1','2014-11-10 17:12:50.000');
+INSERT INTO Process_Classification (classification_id,classification_name,created_id,created_at,updated_id,updated_at) VALUES ('13','米下処理','1','2017-10-24 18:10:40.023','1','2017-10-24 18:10:40.023');

@@ -1,0 +1,17 @@
+id,name,email,password,remember_token,admin_flag,role_id,deleted_at,created_id,created_at,updated_id,updated_at
+1,システム管理者,system@mail.com,$2y$10$C.uNsHWmSTMjU8kgEHfUyORjHRf9pIsJpmv2og1PiPOp.B8b0GnPm,a2nY1PVACYsMFqflLO19R6LFycfkusznvRlMSW7WehzfZ25Mhnxvdmv6zXWo,1,,,1,2014-04-10 00:00:00,1,2018-06-04 19:03:57
+2,WebAPI用ユーザ,webapi@mail.com,$2y$10$C.uNsHWmSTMjU8kgEHfUyORjHRf9pIsJpmv2og1PiPOp.B8b0GnPm,,1,,,1,2014-04-10 00:00:00,1,2016-11-11 00:00:00
+3,maeda.kazumi002,maeda.kazumi002@kk.jp.panasonic.com,$2y$10$/ZXOC4FLD1Sgjp0H5Plg5e6ZsfI7t59TQZu6I2nCM63puvb9odx2K,USLgSaOP1mA5ykCoI9U8cmHLKhqw8OuRqTT5pFpv66NYC2sulICnvDCxieNT,0,2,2018-03-12 16:07:55,1,2016-11-11 14:28:10,5,2018-03-12 16:07:55
+4,aso.mitsu,aso.mitsu@jp.panasonic.com,$2y$10$hkr0AsBproVsv8CBFvtM2etmULIBFxDXdn9PT3kXDc3rITJn1eABm,f4XPop7iSNRvojwUOtYgP61VtCWsM9AkLciuSgmnAwaCpCYtxDR319cinNdr,1,,,1,2016-11-11 19:22:09,1,2017-07-11 19:22:21
+5,oono.atsuko,oono.atsuko@jp.panasonic.com,$2y$10$U0.ZnewvGLaQepx9B/4k7uuEi90yC4DSbfQyceUAVsrD8BHU6Hzzu,,1,,,1,2016-11-17 18:55:43,6,2017-04-11 17:58:13
+6,nishii.yoshimi,nishii.yoshimi@jp.panasonic.com,$2y$10$YILSzEuhdtUnb.RBLgQ49Os7lerNACRVtvH.OS5wjAt4nBMjqqrzG,,1,,,1,2016-11-17 18:56:37,1,2016-11-17 18:56:37
+7,mochizuki.y,mochizuki.y@jp.panasonic.com,$2y$10$5lwf662KBQGzdaYqsF5cKeDYhi7KJ.0RozWqPRsL3PD6EXdh.GvAG,T739gLz5eLOqJCaiIvRJkfAgwQ6UXxw8OF8br8v9y1WnYJVaMlxJCHTA09Ds,0,2,2018-03-12 16:08:22,1,2016-11-17 19:02:39,5,2018-03-12 16:08:22
+8,minami.kazumi,minami.kazumi@kk.jp.panasonic.com,$2y$10$7SU2V/wzFkom61D5XoSSFONZGjsZ256BN0mKqKOsKPUKLvhbq8usm,,1,,,1,2016-11-17 19:03:32,1,2016-11-17 19:03:32
+9,kobayashi.yuka,kobayashi.yuka@kk.jp.panasonic.com,$2y$10$CwgfnTvfhitx3uqQ984K5Ob/CX.sx8f.T.Kz30Wixh2odv9SVkYMO,,0,2,2018-03-12 16:12:16,6,2017-04-03 09:27:54,5,2018-03-12 16:12:16
+10,muraji.tsutomu,muraji.tsutomu@jp.panasonic.com,$2y$10$xFLY4/frmWTAkId9uoGnzO0D9VCkEQyytCzFpPsdXhmuS1evm4Ete,,1,,2018-03-12 16:11:27,4,2017-04-03 10:56:48,5,2018-03-12 16:11:27
+11,koyama.rie,koyama.rie@kk.jp.panasonic.com,$2y$10$7jl1rGn8OpoNcwGNgadmWeBE.o.zbnSBs1wtMuZJppufvz0FSA2lO,,0,2,2018-03-12 16:11:07,6,2017-07-03 09:34:25,5,2018-03-12 16:11:07
+12,nishigawa.atsushi@PBS,nishigawa.atsushi@kk.jp.panasonic.com,$2y$10$Fh1Ii4wU8ZQi0GFY1M9d4..KvD3U9b5MADqtSvHzvqBP3ya/1PKYm,dTO7TsQfO5VTTD1FvpH0klxRP83RwkV7k94yJ36kensePwTMZyhZYbfXd31t,0,2,,1,2017-09-14 16:27:38,1,2017-09-14 17:41:06
+13,yohei.endo,yohei.endo@depart.onmicrosoft.com,$2y$10$YW.V/2bgaJwF1tCpB13R3u3VPs8OJXEODg2rKjKvWk5oUnLF7FNPK,,1,,,4,2018-01-12 11:29:31,4,2018-01-12 11:29:31
+14,kenjo_depart,kenjo@depart.onmicrosoft.com,$2y$10$sza2zAkDuGZTO.4bMSf2AeVLHal50d1SahMVEOB/ivNB.r9qW6APS,,1,,,13,2018-01-16 15:23:47,13,2018-01-16 15:23:47
+15,dev_weekcook,dev_weekcook@depart-inc.com,$2y$10$gsdGAtQEcGA4RA4VoHNTb.mzjvTcW0krobi2Doraw42PMB9anuUfW,u7n7OacfT9lPrR2kfHjyWLza2Dnrqw4LeH5We3kHCpCSF2cfr3bx1x41nGYS,1,,,13,2018-01-16 16:30:41,5,2018-04-17 13:01:13
+16,kayoko.abe,kayoko.abe.28aug@gmail.com,$2y$10$kYx3m/Z//LjZ6BPfGgjgtu.H7vO/7VxydDIERDcmoln65L1lVwLIS,,0,3,,15,2018-04-17 12:44:14,15,2018-04-17 12:44:14

@@ -1,0 +1,8 @@
+INSERT INTO Btob_Client_Contracts (btob_client_contract_id,btob_client_id,contract_id,created_id,created_at,updated_id,updated_at) VALUES ('1','1','1','6','2017-05-11 15:44:05.000','6','2017-05-11 15:44:05.000');
+INSERT INTO Btob_Client_Contracts (btob_client_contract_id,btob_client_id,contract_id,created_id,created_at,updated_id,updated_at) VALUES ('2','1','2','6','2017-05-29 14:23:14.000','6','2017-05-29 14:23:14.000');
+INSERT INTO Btob_Client_Contracts (btob_client_contract_id,btob_client_id,contract_id,created_id,created_at,updated_id,updated_at) VALUES ('3','2','3','6','2017-05-29 14:32:49.000','6','2017-05-29 14:32:49.000');
+INSERT INTO Btob_Client_Contracts (btob_client_contract_id,btob_client_id,contract_id,created_id,created_at,updated_id,updated_at) VALUES ('4','3','4','6','2017-06-27 15:00:48.000','6','2017-06-27 15:00:48.000');
+INSERT INTO Btob_Client_Contracts (btob_client_contract_id,btob_client_id,contract_id,created_id,created_at,updated_id,updated_at) VALUES ('5','3','5','6','2017-06-28 10:22:09.000','6','2017-06-28 10:22:09.000');
+INSERT INTO Btob_Client_Contracts (btob_client_contract_id,btob_client_id,contract_id,created_id,created_at,updated_id,updated_at) VALUES ('6','4','6','6','2017-07-11 12:52:40.000','6','2017-07-11 12:52:40.000');
+INSERT INTO Btob_Client_Contracts (btob_client_contract_id,btob_client_id,contract_id,created_id,created_at,updated_id,updated_at) VALUES ('7','5','7','15','2018-03-16 16:30:21.000','15','2018-03-16 16:30:21.000');
+INSERT INTO Btob_Client_Contracts (btob_client_contract_id,btob_client_id,contract_id,created_id,created_at,updated_id,updated_at) VALUES ('8','6','8','15','2018-05-14 12:44:58.000','15','2018-05-14 12:44:58.000');

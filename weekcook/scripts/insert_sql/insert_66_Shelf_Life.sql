@@ -1,0 +1,10 @@
+INSERT INTO Shelf_Life (shelf_life_id,shelf_life,days,created_id,created_at,updated_id,updated_at) VALUES ('1','1日間','1','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Shelf_Life (shelf_life_id,shelf_life,days,created_id,created_at,updated_id,updated_at) VALUES ('2','2日間','2','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Shelf_Life (shelf_life_id,shelf_life,days,created_id,created_at,updated_id,updated_at) VALUES ('3','3日間','3','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Shelf_Life (shelf_life_id,shelf_life,days,created_id,created_at,updated_id,updated_at) VALUES ('4','4日間','4','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Shelf_Life (shelf_life_id,shelf_life,days,created_id,created_at,updated_id,updated_at) VALUES ('5','5日間','5','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Shelf_Life (shelf_life_id,shelf_life,days,created_id,created_at,updated_id,updated_at) VALUES ('6','6日間','6','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Shelf_Life (shelf_life_id,shelf_life,days,created_id,created_at,updated_id,updated_at) VALUES ('7','1週間','7','1','2014-04-10 00:00:00.000','1','2016-11-17 21:04:10.000');
+INSERT INTO Shelf_Life (shelf_life_id,shelf_life,days,created_id,created_at,updated_id,updated_at) VALUES ('8','2週間','14','1','2014-04-10 00:00:00.000','1','2016-11-17 21:03:59.000');
+INSERT INTO Shelf_Life (shelf_life_id,shelf_life,days,created_id,created_at,updated_id,updated_at) VALUES ('9','1ヶ月','30','1','2014-04-10 00:00:00.000','1','2016-11-17 21:04:24.000');
+INSERT INTO Shelf_Life (shelf_life_id,shelf_life,days,created_id,created_at,updated_id,updated_at) VALUES ('10','不可','0','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');

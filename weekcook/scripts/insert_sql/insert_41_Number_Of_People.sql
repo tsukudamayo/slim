@@ -1,0 +1,4 @@
+INSERT INTO Number_Of_People (number_of_people_id,number_of_people,notation,stove,microwave,grill,created_id,created_at,updated_id,updated_at) VALUES ('1','1.0','1人前','1','1','1','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Number_Of_People (number_of_people_id,number_of_people,notation,stove,microwave,grill,created_id,created_at,updated_id,updated_at) VALUES ('2','2.0','2人前','2','1','1','1','2014-04-10 00:00:00.000','1','2015-04-08 17:39:03.000');
+INSERT INTO Number_Of_People (number_of_people_id,number_of_people,notation,stove,microwave,grill,created_id,created_at,updated_id,updated_at) VALUES ('3','3.0','3人前','2','1','1','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
+INSERT INTO Number_Of_People (number_of_people_id,number_of_people,notation,stove,microwave,grill,created_id,created_at,updated_id,updated_at) VALUES ('4','4.0','4人前','2','1','1','1','2014-04-10 00:00:00.000','1','2016-11-11 00:00:00.000');
