@@ -31,9 +31,9 @@ slim = tf.contrib.slim
 
 _FILE_PATTERN = 'food_%s_*.tfrecord'
 
-SPLITS_TO_SIZES = {'train': 104, 'validation': 26}
+SPLITS_TO_SIZES = {'train': 6950, 'validation': 100}
 
-_NUM_CLASSES = 3
+_NUM_CLASSES = 10
 
 _ITEMS_TO_DESCRIPTIONS = {
     'image': 'A color image of varying size.',

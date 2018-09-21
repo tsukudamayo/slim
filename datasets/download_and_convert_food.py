@@ -38,7 +38,7 @@ from datasets import dataset_utils
 
 # The URL where the Flowers data can be downloaded.
 _DATA_URL = '/media/panasonic/644E9C944E9C611A/tmp/data/img'
-_DOWNROAD_DIR = 'food_dossari_20180816_validation'
+_DOWNROAD_DIR = 'food_google_search_224_20180918/validation'
 
 # The number of images in the validationset.
 _NUM_VALIDATION = 0
@@ -110,7 +110,7 @@ def _convert_dataset(split_name, filenames, class_names_to_ids, dataset_dir):
   """Converts the given filenames to a TFRecord dataset.
 
   Args:
-    split_name: The name of the dataset, either 'train or 'validation'.
+    split_name: The name of the dataset, either 'train or 'validation.
     filenames: A list of absolute paths to png or jpg images.
     class_names_to_ids: A dictionary from class names (strings) to ids
       (integers).

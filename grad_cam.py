@@ -38,22 +38,27 @@ FLAGS = tf.app.flags.FLAGS
 #-----------#
 # constants #
 #-----------#
-_NUM_CLASSES = 3
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_224_dossari_20180815_cu_ep_tm_x10'
+_NUM_CLASSES = 10
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_search_224_20180918_x_10'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180815_food_dossari_cu_ep_tm_x10_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180918_food_google_search_224_10class_x_10_mobilenet_v1_1_224_finetune'
 _CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
 _MODEL_NAME = 'mobilenet_v1'
-fname = 'data/tomato_real_002.png'
+# fname = 'data/tomato_real_002.png'
 gradient_name = 'tomato'
+_VALIDATION_DIR='validation'
 
 
 def load_image(path, normalize=True):
     img = skimage.io.imread(path)
+    print('img.max :', img.max())
+    print('img.min :', img.min())
     if normalize:
         img = img / 255.0
+        print('norm img.max :', img.max())
+        print('norm img.min :', img.min())
         assert (0 <= img).all() and (img <= 1.0).all()
 
     short_edge = min(img.shape[:2])
@@ -175,84 +180,93 @@ def main():
   #--------------#
   checkpoint_file = os.path.join(_CHECKPOINT_PATH, _CHECKPOINT_FILE)
   category_map = convert_label_files_to_dict(_DATA_DIR, _LABEL_DATA)
-
-  eval_graph = tf.Graph()
-  with eval_graph.as_default():
-    with eval_graph.gradient_override_map({'Relu': 'Guidedrelu'}):
-      
-      # tf.reset_default_graph()
-      
-      file_input = tf.read_file(fname)
-      input = tf.image.decode_png(tf.read_file(file_input), channels=3)
-      images = tf.expand_dims(input, 0)
-      images = tf.cast(images, tf.float32)/128 - 1
-      images.set_shape((None, None, None, 3))
-      images = tf.image.resize_images(images, (224,224))
-
-      labels = tf.placeholder(tf.float32, [1, _NUM_CLASSES])
-      
-      with tf.contrib.slim.arg_scope(mobilenet_v1.mobilenet_v1_arg_scope()):
-        logits, end_points = mobilenet_v1.mobilenet_v1(
-            images,
-            num_classes=_NUM_CLASSES,
-            is_training=False,
-        )
+  
+  validation_files = []
+  for root, dirs, files in os.walk(_VALIDATION_DIR):
+    for f in files:
+      filepath = os.path.join(root, f)
+      validation_files.append(filepath)
+  
+  for fname in validation_files:
+  
+    eval_graph = tf.Graph()
+    with eval_graph.as_default():
+      with eval_graph.gradient_override_map({'Relu': 'Guidedrelu'}):
         
-      prob = end_points['Predictions']
-      cost = (-1) * tf.reduce_sum(tf.multiply(labels, tf.log(prob)), axis=1)
-      print('cost: ', cost)
-
-      y_c = tf.reduce_sum(tf.multiply(logits, labels), axis=1)
-      print('reduce_sum(logits, labels)', y_c)
-
-      target_conv_layer = end_points['Conv2d_13_pointwise']
-      target_conv_layer_grad = tf.gradients(y_c, target_conv_layer)[0]
-
-      gb_grad = tf.gradients(cost, images)[0]
-        
-      vars = slim.get_variables_to_restore()
-      saver = tf.train.Saver()
-
-
-  eval_image = load_image(fname, normalize=False)
-  eval_image = eval_image.reshape((1,224,224,3))
-
-  # category_number = category_map[gradient_name]
-  eval_label = np.array([1 if i == 0 else 0 for i in range(3)])
-  eval_label = eval_label.reshape(1, -1)
-
-  #------------#
-  # prediction #
-  #------------#
-  with tf.Session(graph=eval_graph) as sess:
-    saver.restore(sess, checkpoint_file)
-    x = end_points['Predictions'].eval(
-        feed_dict={file_input: fname}
-    )
-
-    # output top predicitions
-    print(sys.stdout.write('Top 1 prediction: %d %s %f'
-                % (x.argmax(), category_map[x.argmax()], x.max())))
+        # tf.reset_default_graph()
     
-    # output all class probabilities
-    for i in range(x.shape[1]):
-        print(sys.stdout.write('%s : %s' % (category_map[i], x[0][i])))
-
-    # visualize hidden layer
-    # print('end_points\n', end_points)
-
-    gb_grad_val, target_conv_layer_val, target_conv_layer_grad_val = sess.run(
-        [gb_grad, target_conv_layer, target_conv_layer_grad],
-        feed_dict={images: eval_image, labels: eval_label}
-        )
-    print('gb_grad_val.shape', gb_grad_val.shape)
-    print('target_conv_layer_val.shape', target_conv_layer_grad_val.shape)
-    print('target_conv_layer_grad_val.shape', target_conv_layer_grad_val.shape)
-
-    visualize(eval_image,
-              target_conv_layer_val,
-              target_conv_layer_grad_val,
-              gb_grad_val)
+        file_input = tf.read_file(fname)
+        input = tf.image.decode_png(tf.read_file(file_input), channels=3)
+        images = tf.expand_dims(input, 0)
+        images = tf.cast(images, tf.float32)/128 - 1
+        images.set_shape((None, None, None, 3))
+        images = tf.image.resize_images(images, (224,224))
+        print('images = resize_images', images)
+    
+        labels = tf.placeholder(tf.float32, [1, _NUM_CLASSES])
+        
+        with tf.contrib.slim.arg_scope(mobilenet_v1.mobilenet_v1_arg_scope()):
+          logits, end_points = mobilenet_v1.mobilenet_v1(
+              images,
+              num_classes=_NUM_CLASSES,
+              is_training=False,
+          )
+          
+        prob = end_points['Predictions']
+        cost = (-1) * tf.reduce_sum(tf.multiply(labels, tf.log(prob)), axis=1)
+        print('cost: ', cost)
+    
+        y_c = tf.reduce_sum(tf.multiply(logits, labels), axis=1)
+        print('reduce_sum(logits, labels)', y_c)
+    
+        target_conv_layer = end_points['Conv2d_13_pointwise']
+        target_conv_layer_grad = tf.gradients(y_c, target_conv_layer)[0]
+    
+        gb_grad = tf.gradients(cost, images)[0]
+          
+        vars = slim.get_variables_to_restore()
+        saver = tf.train.Saver()
+    
+    
+    eval_image = load_image(fname, normalize=False)
+    eval_image = eval_image.reshape((1,224,224,3))
+    
+    # category_number = category_map[gradient_name]
+    eval_label = np.array([1 if i == 0 else 0 for i in range(10)])
+    eval_label = eval_label.reshape(1, -1)
+    
+    #------------#
+    # prediction #
+    #------------#
+    with tf.Session(graph=eval_graph) as sess:
+      saver.restore(sess, checkpoint_file)
+      x = end_points['Predictions'].eval(
+          feed_dict={file_input: fname}
+      )
+    
+      # output top predicitions
+      print(sys.stdout.write('Top 1 prediction: %d %s %f'
+                  % (x.argmax(), category_map[x.argmax()], x.max())))
+      
+      # output all class probabilities
+      for i in range(x.shape[1]):
+          print(sys.stdout.write('%s : %s' % (category_map[i], x[0][i])))
+    
+      # visualize hidden layer
+      # print('end_points\n', end_points)
+    
+      gb_grad_val, target_conv_layer_val, target_conv_layer_grad_val = sess.run(
+          [gb_grad, target_conv_layer, target_conv_layer_grad],
+          feed_dict={images: eval_image, labels: eval_label}
+          )
+      print('gb_grad_val.shape', gb_grad_val.shape)
+      print('target_conv_layer_val.shape', target_conv_layer_grad_val.shape)
+      print('target_conv_layer_grad_val.shape', target_conv_layer_grad_val.shape)
+    
+      visualize(eval_image,
+                target_conv_layer_val,
+                target_conv_layer_grad_val,
+                gb_grad_val)
 
 
 if __name__ == '__main__':

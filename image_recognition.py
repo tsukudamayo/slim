@@ -24,13 +24,13 @@ FLAGS = tf.app.flags.FLAGS
 # constants #
 #-----------#
 _NUM_CLASSES = 3
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_dossari_20180815_cu_ep_tm_camera2'
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_kurashiru_20180903_cu_ep_tm_2200_x_10'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180815_food_dossari_cu_ep_tm_camera2_mobilenet_v1_1_224_finetune'
-_CHECKPOINT_FILE = 'model.ckpt-3551'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180814_food_256_manually_select_ep_tm_cu_x10_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
-fname = '20180815_181841.png'
+fname = 'data/'
 
 
 def convert_label_files_to_dict(data_dir, label_file):

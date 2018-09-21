@@ -8,17 +8,10 @@ from tensorflow.contrib.keras.api.keras.preprocessing import image
 
 # define filepath
 _NUM_GENERATE = 10
-_CATEGORY = 'tomato'
-_ORG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/img/food_dossari_20180815_cu_ep_tm/train/' + _CATEGORY
-_DST_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/img/food_dossari_20180815_cu_ep_tm_x_10'
-
-
-# define filepath
-category_dir = os.path.join(_DST_DIR, _CATEGORY)
-if os.path.isdir(_DST_DIR) is False:
-    os.mkdir(_DST_DIR)
-if os.path.isdir(category_dir) is False:
-    os.mkdir(category_dir)
+_CATEGORY = 'bara'
+_ORG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/img/food_google_search_224_20180918/train'
+_DST_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/img/food_google_search_224_20180918_x_10'
+    
 
 # ImageDatagenerator
 datagen = image.ImageDataGenerator(
@@ -34,10 +27,6 @@ datagen = image.ImageDataGenerator(
     zca_whitening=False,                # default: False
 )
 
-# generate random image
-filenames = os.listdir(_ORG_DIR)
-dst_dir = os.path.join(_DST_DIR, _CATEGORY)
-
 # # when using featurewise_center, zca_whitening it needs that ndarray fit
 # x_train = np.empty((256,256,3))
 # x_train = np.expand_dims(x_train, axis=0)
@@ -52,30 +41,45 @@ dst_dir = os.path.join(_DST_DIR, _CATEGORY)
 # x_train /= 255.0
 # datagen.fit(x_train)
 
+# define filepath
+if os.path.exists(_DST_DIR) is False:
+    os.mkdir(_DST_DIR)
 
-for f in filenames:
-    print(f)
-    img_path = os.path.join(_ORG_DIR, f)
-    img = image.load_img(img_path, target_size=(256, 256))
-    
-    x = image.img_to_array(img)
-    x = x.reshape((1,) + x.shape)
+category_directories = os.listdir(_ORG_DIR)
+for category_dir in category_directories:
+    print('category_dir', category_dir)
+    org_dir = os.path.join(_ORG_DIR, category_dir)
+    dst_dir = os.path.join(_DST_DIR, category_dir)
+    print('org_dir', dst_dir)
+    if os.path.exists(dst_dir) is False:
+        os.mkdir(dst_dir)
 
-    # generate image data
-    i = 0
-    for batch in datagen.flow(x, batch_size=1):
-        i += 1
+    filenames = os.listdir(org_dir)
 
-        # gen_image is PIL.Image class object
-        gen_image = image.array_to_img(batch[0])
-
-        # specify filename and filepath
-        fname, ext = os.path.splitext(f)
-        padding_number = '{0:02d}'.format(i)
-        generate_filename = '{0}_{1}{2}'.format(fname, padding_number, ext)
+    # generate random image
+    for f in filenames:
+        print(f)
+        img_path = os.path.join(org_dir, f)
+        img = image.load_img(img_path, target_size=(256, 256))
         
-        gen_image.save(os.path.join(dst_dir, generate_filename))
-
-        # generate number of file that specified by _NUM_GENERATE
-        if i % _NUM_GENERATE == 0:
-            break
+        x = image.img_to_array(img)
+        x = x.reshape((1,) + x.shape)
+    
+        # generate image data
+        i = 0
+        for batch in datagen.flow(x, batch_size=1):
+            i += 1
+    
+            # gen_image is PIL.Image class object
+            gen_image = image.array_to_img(batch[0])
+    
+            # specify filename and filepath
+            fname, ext = os.path.splitext(f)
+            padding_number = '{0:02d}'.format(i)
+            generate_filename = '{0}_{1}{2}'.format(fname, padding_number, ext)
+            
+            gen_image.save(os.path.join(dst_dir, generate_filename))
+    
+            # generate number of file that specified by _NUM_GENERATE
+            if i % _NUM_GENERATE == 0:
+                break

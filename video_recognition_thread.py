@@ -53,7 +53,6 @@ def send_get_request(url, key, value):
     )
     urllib.request.urlopen(req)
 
-
 def convert_label_files_to_dict(data_dir, label_file):
     category_map = {}
     keys, values = [], []
@@ -331,7 +330,7 @@ def main():
     cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox1.png', bbox1)
     cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox2.png', bbox2)
 
-    if count % 5 == 0:
+    if count % 25 == 0:
       thread = detection_thread(
           bbox1,
           bbox2,
