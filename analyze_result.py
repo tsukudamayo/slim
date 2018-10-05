@@ -10,7 +10,7 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 
 
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_search_224_20180918_x_10'
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_search_224_20180927_x_10'
 _LABEL_FILE = 'labels.txt'
 
 

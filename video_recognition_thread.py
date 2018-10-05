@@ -35,11 +35,11 @@ FLAGS = tf.app.flags.FLAGS
 # constants #
 #-----------#
 _URL = 'http://localhost:8080/update_recipe'
-_NUM_CLASSES = 3
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_224_dossari_20180815_cu_ep_tm_x10'
+_NUM_CLASSES = 17
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_search_224_20180927_x_10'
 _LABEL_DATA = 'labels.txt'
 _DB_DATA = 'labels_db.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180815_food_dossari_cu_ep_tm_x10_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180927_food_google_search_224_17class_x_10_mobilenet_v1_1_224_finetune'
 _CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
@@ -185,10 +185,12 @@ class detection_thread(threading.Thread):
     saver = tf.train.Saver()
     
     with tf.Session() as sess:
-      bbox1 = self.bbox1 / 128 - 1
-      bbox2 = self.bbox2 / 128 - 1
-      bbox1 = np.expand_dims(bbox1, 0)
-      bbox2 = np.expand_dims(bbox2, 0)
+      # bbox1 = self.bbox1 / 128 - 1
+      # bbox2 = self.bbox2 / 128 - 1
+      bbox1 = self.bbox1[:,:,::-1]
+      bbox2 = self.bbox2[:,:,::-1]
+      # bbox1 = np.expand_dims(bbox1, 0)
+      # bbox2 = np.expand_dims(bbox2, 0)
       
       # evaluation
       log = str()
@@ -197,7 +199,7 @@ class detection_thread(threading.Thread):
       for bbox, bbox_name in zip(all_bbox, bbox_names):
         saver.restore(sess, self.checkpoint_file)
         x = end_points['Predictions'].eval(
-            feed_dict={images: bbox}
+            feed_dict={input: bbox}
         )
         # output top predicitons
         if bbox_name == 'left':
@@ -330,7 +332,7 @@ def main():
     cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox1.png', bbox1)
     cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox2.png', bbox2)
 
-    if count % 25 == 0:
+    if count % 5 == 0:
       thread = detection_thread(
           bbox1,
           bbox2,

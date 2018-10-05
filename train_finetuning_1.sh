@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DATASET_DIR=/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_20180906_cu_ep_tm_no_x_10
-TRAIN_DIR=/media/panasonic/644E9C944E9C611A/tmp/model/20180906_food_google_4class_cu_ep_tm_no_x_10_mobilenet_v1_1_224_finetune
+DATASET_DIR=/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/cooking_kurashiru_20181002_x_10
+TRAIN_DIR=/media/panasonic/644E9C944E9C611A/tmp/model/20181002_cooking_kurashiru_9class_cu_ep_tm_no_x_10_mobilenet_v1_1_224_finetune
 CHECKPOINT_PATH=/media/panasonic/644E9C944E9C611A/tmp/pretrained/mobilenet_v1_1_224/mobilenet_v1_1.0_224.ckpt
 
 mkdir -p ${TRAIN_DIR}

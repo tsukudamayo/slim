@@ -8,7 +8,7 @@ echo ${_TARGET_DIR}
 mkdir ${_TARGET_DIR}
 
 count=0
-for f in `ls ${_MOV_DIR} | grep webm`
+for f in `ls ${_MOV_DIR} | grep mp4`
 do
     echo $count
     echo $f
@@ -17,7 +17,7 @@ do
     mkdir ${_TARGET_DIR}'/'$dir_name
 
     cd ${_TARGET_DIR}'/'$dir_name
-    ffmpeg -i ${_MOV_DIR}'/'$f -s 1920x1080 %06d.png
+    ffmpeg -i ${_MOV_DIR}'/'$f -s 224x224 %06d.png
     
     count=$((count+1))
 done

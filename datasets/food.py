@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+# http://www.adpache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,9 +31,9 @@ slim = tf.contrib.slim
 
 _FILE_PATTERN = 'food_%s_*.tfrecord'
 
-SPLITS_TO_SIZES = {'train': 6950, 'validation': 100}
+SPLITS_TO_SIZES = {'train': 57450, 'validation': 170}
 
-_NUM_CLASSES = 10
+_NUM_CLASSES = 17
 
 _ITEMS_TO_DESCRIPTIONS = {
     'image': 'A color image of varying size.',

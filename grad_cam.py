@@ -38,10 +38,10 @@ FLAGS = tf.app.flags.FLAGS
 #-----------#
 # constants #
 #-----------#
-_NUM_CLASSES = 10
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_search_224_20180918_x_10'
+_NUM_CLASSES = 7
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/cooking_20180925'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180918_food_google_search_224_10class_x_10_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180926_cooking_kurashiru_224_x_10_mobilenet_v1_1_224_finetune'
 _CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
@@ -232,7 +232,7 @@ def main():
     eval_image = eval_image.reshape((1,224,224,3))
     
     # category_number = category_map[gradient_name]
-    eval_label = np.array([1 if i == 0 else 0 for i in range(10)])
+    eval_label = np.array([1 if i == 0 else 0 for i in range(_NUM_CLASSES)])
     eval_label = eval_label.reshape(1, -1)
     
     #------------#
