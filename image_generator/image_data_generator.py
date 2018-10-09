@@ -9,8 +9,8 @@ from tensorflow.contrib.keras.api.keras.preprocessing import image
 # define filepath
 _NUM_GENERATE = 10
 _CATEGORY = 'bara'
-_ORG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/img/cooking_kurashiru_20181002/train'
-_DST_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/img/cooking_kurashiru_20181002_x_10'
+_ORG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/img/cooking_kurashiru_20181005'
+_DST_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/img/cooking_kurashiru_20181005_x_10'
     
 
 # ImageDatagenerator

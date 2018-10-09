@@ -38,7 +38,7 @@ from datasets import dataset_utils
 
 # The URL where the Flowers data can be downloaded.
 _DATA_URL = '/media/panasonic/644E9C944E9C611A/tmp/data/img'
-_DOWNROAD_DIR = 'cooking_kurashiru_20181002_x_10'
+_DOWNROAD_DIR = 'cooking_kurashiru_20181005_x_10'
 
 # The number of images in the validationset.
 _NUM_VALIDATION = 0
@@ -116,7 +116,7 @@ def _convert_dataset(split_name, filenames, class_names_to_ids, dataset_dir):
       (integers).
     dataset_dir: The directory where the converted datasets are stored.
   """
-  assert split_name in ['train', 'validlation']
+  assert split_name in ['train']
 
   num_per_shard = int(math.ceil(len(filenames) / float(_NUM_SHARDS)))
 
@@ -163,7 +163,7 @@ def _convert_dataset(split_name, filenames, class_names_to_ids, dataset_dir):
 
 
 def _dataset_exists(dataset_dir):
-  for split_name in ['train', 'validation']:
+  for split_name in ['train']:
     for shard_id in range(_NUM_SHARDS):
       output_filename = _get_dataset_filename(
           dataset_dir, split_name, shard_id)
