@@ -65,9 +65,6 @@ def print_coordinates(event, x, y, flags, param):
   print(x, y)
 
 
-# def predict_regulations()
-
-
 def main():
   now = datetime.now()
   today = now.strftime('%Y%m%d')
@@ -178,7 +175,7 @@ def main():
           if int(previous_prediction) + 1 == int(x.argmax()):
             status = int(x.argmax())
             previous_prediction = status
-            query = 'http://localhost:8080/update_recipe?ingredient_ids1=35&ingr    edient_ids2=42&flying_pan=true'
+            query = 'http://localhost:8080/update_recipe?ingredient_ids1=35&ingredient_ids2=42&flying_pan=true'
             requests.get(query)
           else:
             pass

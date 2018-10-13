@@ -11,7 +11,7 @@ _NUM_GENERATE = 10
 _CATEGORY = 'bara'
 _ORG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/img/cooking_kurashiru_20181005'
 _DST_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/img/cooking_kurashiru_20181005_x_10'
-    
+
 
 # ImageDatagenerator
 datagen = image.ImageDataGenerator(

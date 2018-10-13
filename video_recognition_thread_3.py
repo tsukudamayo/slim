@@ -7,6 +7,7 @@ import sys
 import time
 from datetime import datetime
 import threading
+# import concurrent.futures
 import requests
 
 import numpy as np
@@ -25,11 +26,11 @@ _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
 #---------------------#
 # ingredient property #
 #---------------------#
-_INGREDIENT_NUM_CLASSES = 12
-_INGREDIENT_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_search_224_20180925_x_10'
+_INGREDIENT_NUM_CLASSES = 17
+_INGREDIENT_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_search_224_20180927_x_10'
 _INGREDIENT_LABEL_DATA = 'labels.txt'
 _INGREDIENT_DB_DATA = 'labels_db.txt'
-_INGREDIENT_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180925_food_google_search_224_12class_x_10_mobilenet_v1_1_224_finetune'
+_INGREDIENT_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180927_food_google_search_224_17class_x_10_mobilenet_v1_1_224_finetune'
 _INGREDIENT_CHECKPOINT_FILE = 'model.ckpt-20000'
 
 #------------------#
@@ -220,7 +221,7 @@ class ingredient_thread(threading.Thread):
       # requests.get('http://localhost:8080/update_recipe?ingredient_ids=42,46&ingredient_ids2=43,617&flying_pan=true&page_index=0')
       print('self.previous_predictions_1', self.previous_predictions_1)
       print('self.current_predictions_1', self.current_predictions_1)
-      print(self.previous_predictions_1 == self.current_predictions_1)
+      print(self.previous_predictions_1 != self.current_predictions_1)
       if self.previous_predictions_1 != self.current_predictions_1:
         print('change')
         t_query_0 = time.time()
@@ -247,7 +248,8 @@ class cooking_thread(threading.Thread):
                checkpoint_file,
                category_map,
                # db_map,
-               previous_predictions_2,):
+               previous_predictions_2,
+               status):
     super(cooking_thread, self).__init__()
     self.bbox1 = bbox1
     self.output_dir = output_dir
@@ -255,7 +257,8 @@ class cooking_thread(threading.Thread):
     self.category_map = category_map
     # self.db_map = db_map
     self.previous_predictions_2 = previous_predictions_2
-    self.current_predictions_2 = []
+    self.current_predictions_2 = 0
+    self.status = status
     
   def run(self):
     tf.reset_default_graph()
@@ -297,26 +300,26 @@ class cooking_thread(threading.Thread):
           % (x.argmax(), self.category_map[x.argmax()], x.max())
       ))
 
-      # output all class probabilities
-      for i in range(x.shape[1]):
-        print(sys.stdout.write('%s : %s' % (self.category_map[i], x[0][i])))
+      # # output all class probabilities
+      # for i in range(x.shape[1]):
+      #   print(sys.stdout.write('%s : %s' % (self.category_map[i], x[0][i])))
 
-      # requests
-      # pred_id = self.db_map[self.category_map[x.argmax()]]
-
-      # self.current_predictions_2.append(pred_id)
-
-      # print('self.previous_predictions_2', self.previous_predictions_2)
-      # print('self.current_predictions_2', self.current_predictions_2)
+      print('self.previous_predictions_2', self.previous_predictions_2)
+      print('self.current_predictions_2', self.current_predictions_2)
       # print(self.previous_predictions_2 == self.current_predictions_2)
-      # if self.previous_predictions_2 != self.current_predictions_2:
-      #   print('change')
-      #   t_query_0 = time.time()
-      #   query = 'http://localhost:8080/update_recipe?ingredient_ids1={}&ingredient_ids2={}&flying_pan=true'.format(
-      #       self.current_predictions_2[0],
-      #       self.current_predictions_2[1],
-      #   )
-      #   requests.get(query)
+
+      # management cokking status
+      self.current_predictions_2 = int(x.argmax())
+      if self.previous_predictions_2 + 1 == self.current_predictions_2:
+        self.status = self.current_predictions_2
+        print('change')
+        t_query_0 = time.time()
+        query = 'http://localhost:8080/update_recipe?ingredient_ids1=35&ingredient_ids2=43&flying_pan=true'
+        requests.get(query)
+      else:
+        pass
+      print('current status: %s %s ' % (self.status, self.category_map[self.status]))
+      
       #   t_query_1 = time.time()
       #   print('request time :', t_query_1 - t_query_0)
       # else:
@@ -386,7 +389,8 @@ def main():
   # start video capture
   count = 0
   previous_predictions_1 = []
-  previous_predictions_2 = []
+  previous_predictions_2 = 0
+  status = 0
   t1 = time.time()
   print('start ~ while :', t1 - t0)
   while(True):
@@ -433,18 +437,18 @@ def main():
                   center3_width-threshold:center3_width+threshold]
 
     # save image of bounding box
-    now = datetime.now()
-    seconds = now.strftime('%Y%m%d_%H%M%S') + '_' + str(now.microsecond)
-    cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox1.png', bbox1)
-    cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox2.png', bbox2)
-    cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox3.png', bbox3)
+    # now = datetime.now()
+    # seconds = now.strftime('%Y%m%d_%H%M%S') + '_' + str(now.microsecond)
+    # cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox1.png', bbox1)
+    # cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox2.png', bbox2)
+    # cv2.imwrite(os.path.join(output_dir, seconds) + '_bbox3.png', bbox3)
 
     # # BGR t0 RGB
     # bbox1 = bbox1[:,:,::-1]
     # bbox2 = bbox2[:,:,::-1]
     # bbox3 = bbox3[:,:,::-1]
 
-    if count % 20 == 0:
+    if count % 100 == 17:
       thread1 = ingredient_thread(
           bbox2,
           bbox3,
@@ -456,7 +460,7 @@ def main():
         )
       thread1.start()
       previous_predictions_1 = thread1.current_predictions_1
-    elif count % 20 == 11:
+    elif count % 100 == 67:
       thread2 = cooking_thread(
           bbox1,
           output_dir,
@@ -464,9 +468,14 @@ def main():
           cooking_category_map,
           # db_map,
           previous_predictions_2,
+          status,
         )
       thread2.start()
-      previous_predictions_2 = thread2.current_predictions_2
+      print('status', status)
+      status = thread2.status
+      
+      previous_predictions_2 = thread2.status
+      print('thread2.status', thread2.status)
           
     else:
       pass    

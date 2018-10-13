@@ -7,6 +7,7 @@ import sys
 import time
 from datetime import datetime
 import urllib.request
+import requests
 
 import numpy as np
 import tensorflow as tf
@@ -37,10 +38,10 @@ FLAGS = tf.app.flags.FLAGS
 #-----------#
 _URL = 'http://localhost:3000'
 
-_NUM_CLASSES = 7
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/cooking_kurashiru_20180926_x_10'
+_NUM_CLASSES = 18
+_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_search_224_20181013_x_10'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180926_cooking_kurashiru_224_x_10_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20181013_food_google_search_224_18class_x_10_mobilenet_v1_1_224_finetune'
 _CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
@@ -209,23 +210,32 @@ def main():
       
       threshold = int(224 / 2) # default (224 / 2)
       margin = 10              # not to capture bounding box
-      
+     
+      # # higobashi
       # center_width = int((width / 2)*1.03)
       # center_height = int((height / 2)*1.1)
-      center_width = 670
-      center_height = 720      
+      # # kusatsu IH
+      # center_width = 670
+      # center_height = 720      
+      # kusatsu gyoza
+      center_width = 950
+      center_height = 720
       
       
       with tf.Session(graph=eval_graph) as sess:
-        cap = cv2.VideoCapture('/media/panasonic/644E9C944E9C611A/tmp/data/mov/20180907/20180907_餃子調理-紀文レシピ_羽根つ.mp4')
+        cap = cv2.VideoCapture('/media/panasonic/644E9C944E9C611A/tmp/data/mov/20180907/20180907_紀文-羽根つき餃子-出来上がり.mp4')
       
         # camera propety(1920x1080)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
+        # resume
+        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
       
         # initalize prediction category
         prediction_category = 9999 # this number is not include category map
-      
+        
+        count = 0
         # start video capture
         while(True):
           ret, frame = cap.read()
@@ -257,7 +267,8 @@ def main():
           # bbox = bbox.reshape((1,224,224,3))
       
           # evaluation
-          
+         
+          # if count % 200 == 0:
           saver.restore(sess, checkpoint_file)
           x = end_points['Predictions'].eval(
               feed_dict={input: bbox}
@@ -269,6 +280,20 @@ def main():
                 'Top 1 prediction: %d %s %f'
                 % (x.argmax(), category_map[x.argmax()], x.max())
             ))
+
+          # send request when it detects gyoza
+          if category_map[x.argmax()] == 'gyoza':
+            print('detect gyoza')
+            print('take a picture')
+            print('*'*15 + ' request ' +'*'*15)
+            t_query_0 = time.time()
+            query = 'http://localhost:8080/update_recipe?ingredient_ids1=35&ingredient_ids2=42&flying_pan=true'
+            print('query', query)
+            requests.get(query)
+            t_query_1 = time.time()
+            print('request time :', t_query_1 - t_query_0)
+          else:
+            pass      
             # output all class probabilities
             # for i in range(x.shape[1]):
             #   print(sys.stdout.write('%s : %s' % (category_map[i], x[0][i])))
@@ -279,9 +304,14 @@ def main():
             # print('send GET')
             # print('time :', datetime.now().strftime('%Y%m%d:%H%M%S'))
             # prediction_category = x.argmax()
+          now_seconds = datetime.now().strftime('%Y%m%f_%H%M%S')
+          #with open(str(now_seconds) + '.csv', 'a') as w:
+            
+            
           
           if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+          count += 1
         
         cap.release()
         cv2.destroyAllWindows()

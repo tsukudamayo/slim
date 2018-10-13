@@ -38,7 +38,7 @@ from datasets import dataset_utils
 
 # The URL where the Flowers data can be downloaded.
 _DATA_URL = '/media/panasonic/644E9C944E9C611A/tmp/data/img'
-_DOWNROAD_DIR = 'cooking_kurashiru_20181005_x_10'
+_DOWNROAD_DIR = 'cookware_google_search_224_20181013_x_10'
 
 # The number of images in the validationset.
 _NUM_VALIDATION = 0
@@ -54,17 +54,17 @@ class ImageReader(object):
   """Helper class that provides TensorFlow image coding utilities."""
 
   def __init__(self):
-    # Initializes function that decodes RGB JPEG data.
-    self._decode_jpeg_data = tf.placeholder(dtype=tf.string)
-    self._decode_jpeg = tf.image.decode_jpeg(self._decode_jpeg_data, channels=3)
+    # Initializes function that decodes RGB PNG data.
+    self._decode_png_data = tf.placeholder(dtype=tf.string)
+    self._decode_png = tf.image.decode_png(self._decode_png_data, channels=3)
 
   def read_image_dims(self, sess, image_data):
-    image = self.decode_jpeg(sess, image_data)
+    image = self.decode_png(sess, image_data)
     return image.shape[0], image.shape[1]
 
-  def decode_jpeg(self, sess, image_data):
-    image = sess.run(self._decode_jpeg,
-                     feed_dict={self._decode_jpeg_data: image_data})
+  def decode_png(self, sess, image_data):
+    image = sess.run(self._decode_png,
+                     feed_dict={self._decode_png_data: image_data})
     assert len(image.shape) == 3
     assert image.shape[2] == 3
     return image
@@ -149,7 +149,7 @@ def _convert_dataset(split_name, filenames, class_names_to_ids, dataset_dir):
 
             example = dataset_utils.image_to_tfexample(
                 image_data,
-                b'jpg',
+                b'png',
                 height,
                 width,
                 class_id,
