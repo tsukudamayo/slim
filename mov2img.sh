@@ -8,7 +8,7 @@ echo ${_TARGET_DIR}
 mkdir ${_TARGET_DIR}
 
 count=0
-for f in `ls ${_MOV_DIR} | grep mp4`
+for f in `ls ${_MOV_DIR} | grep webm`
 do
     echo $count
     echo $f

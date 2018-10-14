@@ -1,0 +1,2 @@
+model_checkpoint_path: "/media/tsukudamayo/0CE698DCE698C6FC/tmp/model/cooking_gyoza_20181014_x_10/model.ckpt-20000"
+all_model_checkpoint_paths: "/media/tsukudamayo/0CE698DCE698C6FC/tmp/model/cooking_gyoza_20181014_x_10/model.ckpt-20000"
