@@ -1,0 +1,8 @@
+0:00_nothing,調理スタート
+1:01_flying-pan,フライパンに油を引き、中火で加熱します
+2:02_flying-pan-oil,餃子を並べます
+3:03_flying-pan-hand-gyoza,餃子を並べています
+4:04_flying-pan-gyoza_1,片栗粉を回し入れます
+5:05_flying-pan-gyoza_2,蓋をして、中火で蒸し焼きにします
+6:06_flying-pan-gyoza-starch-hand,水気がなくなってきたら、蓋を取ります
+7:07_flying-pan-gyoza-rid,火を強めて水気をとばします

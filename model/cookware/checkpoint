@@ -1,0 +1,5 @@
+model_checkpoint_path: "/media/panasonic/644E9C944E9C611A/tmp/model/20181013_cookware_google_search_224_18class_x_10_mobilenet_v1_1_224_finetune/model.ckpt-20000"
+all_model_checkpoint_paths: "/media/panasonic/644E9C944E9C611A/tmp/model/20181013_cookware_google_search_224_18class_x_10_mobilenet_v1_1_224_finetune/model.ckpt-9072"
+all_model_checkpoint_paths: "/media/panasonic/644E9C944E9C611A/tmp/model/20181013_cookware_google_search_224_18class_x_10_mobilenet_v1_1_224_finetune/model.ckpt-10872"
+all_model_checkpoint_paths: "/media/panasonic/644E9C944E9C611A/tmp/model/20181013_cookware_google_search_224_18class_x_10_mobilenet_v1_1_224_finetune/model.ckpt-10873"
+all_model_checkpoint_paths: "/media/panasonic/644E9C944E9C611A/tmp/model/20181013_cookware_google_search_224_18class_x_10_mobilenet_v1_1_224_finetune/model.ckpt-20000"

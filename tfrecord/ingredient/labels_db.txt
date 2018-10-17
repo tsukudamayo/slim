@@ -1,0 +1,17 @@
+bacon:125
+cabbage:3
+carrot:65
+cucumber:36
+egg:198
+eggplant:43
+greenpepper:45
+onion:70
+potato:69
+pumpkin:35
+salmon:146
+tomato:42
+asparagus:1
+cone:39
+enoki:74
+nothing:0	
+gyoza:0

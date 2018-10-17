@@ -38,7 +38,7 @@ from datasets import dataset_utils
 
 # The URL where the Flowers data can be downloaded.
 _DATA_URL = '/media/panasonic/644E9C944E9C611A/tmp/data/img'
-_DOWNROAD_DIR = 'cookware_google_search_224_20181013_x_10'
+_DOWNROAD_DIR = 'cooking_kurashiru_20181016_x_10'
 
 # The number of images in the validationset.
 _NUM_VALIDATION = 0

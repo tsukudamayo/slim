@@ -23,10 +23,10 @@ slim = tf.contrib.slim
 #-----------#
 _URL = 'http://localhost:3000'
 
-_NUM_CLASSES = 7
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/cooking_kurashiru_20180926_x_10'
+_NUM_CLASSES = 8
+_DATA_DIR = 'tfrecord/cooking'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180926_cooking_kurashiru_224_x_10_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_PATH = 'model/cooking'
 _CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
@@ -112,16 +112,16 @@ def main():
       threshold = int(224 / 2) # default (224 / 2)
       margin = 10              # not to capture bounding box
 
-      # higobashi
-      center_width = int((width / 2)*1.03)
-      center_height = int((height / 2)*1.1)
-      # kusatsu
-      # center_width = 670
-      # center_height = 720      
+      # # higobashi
+      # center_width = int((width / 2)*1.03)
+      # center_height = int((height / 2)*1.1)
+      # kusatsu IH
+      center_width = 670
+      center_height = 720      
       
       
       with tf.Session(graph=eval_graph) as sess:
-        cap = cv2.VideoCapture('/media/panasonic/644E9C944E9C611A/tmp/data/mov/cooking_camera/20180925_143754.mp4')
+        cap = cv2.VideoCapture('/media/panasonic/644E9C944E9C611A/tmp/data/mov/20180907/20180907_紀文-羽根つき餃子-出来上がり.mp4')
       
         # camera propety(1920x1080)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
@@ -130,7 +130,8 @@ def main():
         # initalize prediction category
         previous_prediction = -1 # this number is not include category map
         status = 0
-      
+
+        count = 0
         # start video capture
         while(True):
           ret, frame = cap.read()
@@ -154,50 +155,51 @@ def main():
           now = datetime.now()
           microseconds = now.microsecond
           seconds = str(now.strftime('%Y%m%d_%H%M%S')) + '_' + str(microseconds)
-          cv2.imwrite(os.path.join(output_dir, seconds) + '.png', bbox)
+          # cv2.imwrite(os.path.join(output_dir, seconds) + '.png', bbox)
           # bbox = bbox / 128 - 1
           bbox = bbox[:,:,::-1]
           # bbox = load_image(bbox, normalize=False)
           # bbox = np.expand_dims(bbox, 0)
           # bbox = bbox.reshape((1,224,224,3))
-      
-          # evaluation          
-          saver.restore(sess, checkpoint_file)
-          x = end_points['Predictions'].eval(
-              feed_dict={input: bbox}
-          )
 
-          print('previous predictions', previous_prediction)
-          # print(sys.stdout.write(
-          #     'currnet Top 1 prediction: %d %s %f'
-          #     % (x.argmax(), category_map[x.argmax()], x.max())
-          # ))
-          if int(previous_prediction) + 1 == int(x.argmax()):
-            status = int(x.argmax())
-            previous_prediction = status
-            query = 'http://localhost:8080/update_recipe?ingredient_ids1=35&ingredient_ids2=42&flying_pan=true'
-            requests.get(query)
-          else:
-            pass
-          print('current status: %s %s' % (status, category_map[status]))
-      
-          # if prediction_category != x.argmax():
-          #   # output top predicitons
-          #   print(sys.stdout.write(
-          #       'Top 1 prediction: %d %s %f'
-          #       % (x.argmax(), category_map[x.argmax()], x.max())
-          #   ))
-            # output all class probabilities
-            # for i in range(x.shape[1]):
-            #   print(sys.stdout.write('%s : %s' % (category_map[i], x[0][i])))
+          if count % 5 == 0:
+            # evaluation          
+            saver.restore(sess, checkpoint_file)
+            x = end_points['Predictions'].eval(
+                feed_dict={input: bbox}
+            )
             
-            # send GET request if prediction is changed
-      
-            # send_get_request(_URL, 'gradient', category_map[x.argmax()])
-            # print('send GET')
-            # print('time :', datetime.now().strftime('%Y%m%d:%H%M%S'))
-            # prediction_category = x.argmax()
-          
+            print('previous predictions', previous_prediction)
+            # print(sys.stdout.write(
+            #     'currnet Top 1 prediction: %d %s %f'
+            #     % (x.argmax(), category_map[x.argmax()], x.max())
+            # ))
+            if int(previous_prediction) + 1 == int(x.argmax()):
+              status = int(x.argmax())
+              previous_prediction = status
+              query = 'http://localhost:8080/update_recipe?ingredient_ids1=35&ingredient_ids2=42&flying_pan=true'
+              requests.get(query)
+            else:
+              pass
+            print('current status: %s %s' % (status, category_map[status]))
+            
+            # if prediction_category != x.argmax():
+            #   # output top predicitons
+            #   print(sys.stdout.write(
+            #       'Top 1 prediction: %d %s %f'
+            #       % (x.argmax(), category_map[x.argmax()], x.max())
+            #   ))
+              # output all class probabilities
+              # for i in range(x.shape[1]):
+              #   print(sys.stdout.write('%s : %s' % (category_map[i], x[0][i])))
+              
+              # send GET request if prediction is changed
+            
+              # send_get_request(_URL, 'gradient', category_map[x.argmax()])
+              # print('send GET')
+              # print('time :', datetime.now().strftime('%Y%m%d:%H%M%S'))
+              # prediction_category = x.argmax()
+            
           if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         

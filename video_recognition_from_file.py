@@ -38,10 +38,10 @@ FLAGS = tf.app.flags.FLAGS
 #-----------#
 _URL = 'http://localhost:3000'
 
-_NUM_CLASSES = 18
-_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_search_224_20181013_x_10'
+_NUM_CLASSES = 6
+_DATA_DIR = 'tfrecord/cooking'
 _LABEL_DATA = 'labels.txt'
-_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20181013_food_google_search_224_18class_x_10_mobilenet_v1_1_224_finetune'
+_CHECKPOINT_PATH = 'model/cooking'
 _CHECKPOINT_FILE = 'model.ckpt-20000'
 _IMAGE_DIR = 'image'
 _LOG_DIR = '/media/panasonic/644E9C944E9C611A/tmp/log'
@@ -142,27 +142,14 @@ def settings_property():
     return
 
 
-def load_image(img, normalize=True):
-  print('img.max :', img.max())
-  print('img.min :', img.min())
-  if normalize:
-    img = img / 255.0
-    print('norm img.max :', img.max())
-    print('norm img.min :', img.min())
-    assert (0 <= img).all() and (img <= 1.0).all
+def logging_observation(count, obs):
+    now = datetime.now().strftime('%Y%m%d')
+    with open(str(now) + '_logging_cooking.csv', 'a') as w:
+        w.write(str(count) + ',' + str(obs))
+        w.write('\n')
 
-  short_edge = min(img.shape[:2])
-  yy = int((img.shape[0] - short_edge) / 2)
-  xx = int((img.shape[1] - short_edge) / 2)
-  crop_img = img[yy: yy + short_edge, xx: xx + short_edge]
-  resized_img = skimage.transform.resize(
-      crop_img,
-      (224,224),
-      preserve_range=True
-  )
-
-  return resized_img
-
+    return
+        
 
 def main():
   now = datetime.now()
@@ -214,28 +201,29 @@ def main():
       # # higobashi
       # center_width = int((width / 2)*1.03)
       # center_height = int((height / 2)*1.1)
-      # # kusatsu IH
-      # center_width = 670
-      # center_height = 720      
-      # kusatsu gyoza
-      center_width = 950
+      # kusatsu IH
+      center_width = 670
       center_height = 720
+      # # kusatsu gyoza
+      # center_width = 950
+      # center_height = 720
       
       
       with tf.Session(graph=eval_graph) as sess:
-        cap = cv2.VideoCapture('/media/panasonic/644E9C944E9C611A/tmp/data/mov/20180907/20180907_紀文-羽根つき餃子-出来上がり.mp4')
-      
-        # camera propety(1920x1080)
+        # cap = cv2.VideoCapture('/media/panasonic/644E9C944E9C611A/tmp/data/mov/20180907/20180907_紀文-羽根つき餃子-出来上がり.mp4')
+        cap = cv2.VideoCapture('/media/panasonic/644E9C944E9C611A/tmp/data/mov/20180907/20180907_餃子調理-紀文レシピ_羽根つ.mp4')
+              # camera propety(1920x1080)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
         # resume
         cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
       
-        # initalize prediction category
-        prediction_category = 9999 # this number is not include category map
+        # initalize prediction categoryord(
+        previous_prediction = -1 # this number is not include category map
         
         count = 0
+        instance = 'init'
         # start video capture
         while(True):
           ret, frame = cap.read()
@@ -246,6 +234,26 @@ def main():
               ((center_width+threshold+margin),(center_height+threshold+margin)),
               (0,0,255),
               3
+          )
+          cv2.putText(
+              frame,
+              str(count),
+              (100,300),
+              cv2.FONT_HERSHEY_PLAIN,
+              5,
+              (255,0,0),
+              3,
+              cv2.LINE_AA
+          )
+          cv2.putText(
+              frame,
+              str(instance),
+              (300,300),
+              cv2.FONT_HERSHEY_PLAIN,
+              2,
+              (255,0,0),
+              3,
+              cv2.LINE_AA
           )
           cv2.imshow('frame', frame)
           cv2.setMouseCallback('frame', print_coordinates)
@@ -267,19 +275,27 @@ def main():
           # bbox = bbox.reshape((1,224,224,3))
       
           # evaluation
-         
+          currnet_prediction = 0
           # if count % 200 == 0:
           saver.restore(sess, checkpoint_file)
           x = end_points['Predictions'].eval(
               feed_dict={input: bbox}
           )
       
-          if prediction_category != x.argmax():
-            # output top predicitons
-            print(sys.stdout.write(
-                'Top 1 prediction: %d %s %f'
-                % (x.argmax(), category_map[x.argmax()], x.max())
-            ))
+          # output top predicitons
+          print(sys.stdout.write(
+              'Top 1 prediction: %d %s %f'
+              % (x.argmax(), category_map[x.argmax()], x.max())
+          ))
+          logging_observation(count, x.argmax())
+
+          # currnet_prediction = int(x.argmax())
+          # print('current_prediction', currnet_prediction)
+          # print(previous_prediction + 1 = currnet_prediction)
+          # if previous_prediction + 1 == currnet_prediction:
+          #   print('change status')
+          #   instance = str(currnet_prediction) + ' : ' + str(category_map[x.argmax()])
+          instance = str(category_map[x.argmax()])
 
           # send request when it detects gyoza
           if category_map[x.argmax()] == 'gyoza':
@@ -306,8 +322,6 @@ def main():
             # prediction_category = x.argmax()
           now_seconds = datetime.now().strftime('%Y%m%f_%H%M%S')
           #with open(str(now_seconds) + '.csv', 'a') as w:
-            
-            
           
           if cv2.waitKey(1) & 0xFF == ord('q'):
             break

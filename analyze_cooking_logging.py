@@ -14,6 +14,27 @@ def main():
     plt.plot(X, Y)
     plt.show()
 
+    # each 100 counts
+    start = 0
+    end = 50
+    for i in range(300):
+        print(i*30)
+        plt.plot(X[start:end], Y[start:end])
+        plt.ylim(0.0, 8.0)
+        plt.show()
+
+        plt.hist(Y[start:end])
+        plt.xlim(0.0, 8.0)
+        plt.show()
+
+        start += 100
+        end += 100
+
 
 if __name__ == '__main__':
     main()
+
+
+
+
+

@@ -26,30 +26,30 @@ _URL = 'http://localhost:8080/update_recipe'
 # ingredient property #
 #---------------------#
 _INGREDIENT_NUM_CLASSES = 18
-_INGREDIENT_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/food_google_search_224_20181013_x_10'
+_INGREDIENT_DATA_DIR = 'tfrecord/ingredient/'
 _INGREDIENT_LABEL_DATA = 'labels.txt'
 _INGREDIENT_DB_DATA = 'labels_db.txt'
-_INGREDIENT_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20181013_food_google_search_224_18class_x_10_mobilenet_v1_1_224_finetune'
+_INGREDIENT_CHECKPOINT_PATH = 'model/ingredient'
 _INGREDIENT_CHECKPOINT_FILE = 'model.ckpt-20000'
 
 #------------------#
 # cooking property #
 #------------------#
-_COOKING_NUM_CLASSES = 7
-_COOKING_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/cooking_kurashiru_20180926_x_10'
+_COOKING_NUM_CLASSES = 6
+_COOKING_DATA_DIR = 'tfrecord/cooking'
 _COOKING_LABEL_DATA = 'labels.txt'
 # _COOKING_DB_DATA = 'labels_db.txt'
-_COOKING_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20180926_cooking_kurashiru_224_x_10_mobilenet_v1_1_224_finetune'
+_COOKING_CHECKPOINT_PATH = 'model/cooking'
 _COOKING_CHECKPOINT_FILE = 'model.ckpt-20000'
 
 #------------------#
 # cookware property #
 #------------------#
-_COOKWARE_NUM_CLASSES = 3
-_COOKWARE_DATA_DIR = '/media/panasonic/644E9C944E9C611A/tmp/data/tfrecord/cookware_google_search_224_20181011_x_10'
+_COOKWARE_NUM_CLASSES = 4
+_COOKWARE_DATA_DIR = 'tfrecord/cookware'
 _COOKWARE_LABEL_DATA = 'labels.txt'
 # _COOKWARE_DB_DATA = 'labels_db.txt'
-_COOKWARE_CHECKPOINT_PATH = '/media/panasonic/644E9C944E9C611A/tmp/model/20181012_cookware_google_3class_x_10_mobilenet_v1_1_224_finetune'
+_COOKWARE_CHECKPOINT_PATH = 'model/cookware'
 _COOKWARE_CHECKPOINT_FILE = 'model.ckpt-20000'
 
 
@@ -60,6 +60,7 @@ def send_get_request(url, key, value):
             urllib.parse.urlencode({key: value}))
     )
     urllib.request.urlopen(req)
+
 
 def convert_label_files_to_dict(data_dir, label_file):
     category_map = {}
@@ -90,68 +91,6 @@ def print_coordinates(event, x, y, flags, param):
   print(x, y)
 
 
-def settings_property():
-    # #--------------------#
-    # # property of opencv #
-    # #--------------------#
-    # width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-    # height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-    # fps = cap.get(cv2.CAP_PROP_FPS)
-    # brightness = cap.get(cv2.CAP_PROP_BRIGHTNESS)
-    # contrast = cap.get(cv2.CAP_PROP_CONTRAST)
-    # saturation = cap.get(cv2.CAP_PROP_SATURATION)
-    # hue = cap.get(cv2.CAP_PROP_HUE)
-    # # gain = cap.get(cv2.CAP_PROP_GAIN) # gain is not supported 
-    # exposure = cap.get(cv2.CAP_PROP_EXPOSURE)
-    # rectification = cap.get(cv2.CAP_PROP_RECTIFICATION)
-
-    # monochrome = cap.get(cv2.CAP_PROP_MONOCHROME)
-    # sharpness = cap.get(cv2.CAP_PROP_SHARPNESS)
-    # auto_exposure = cap.get(cv2.CAP_PROP_AUTO_EXPOSURE)
-    # gamma = cap.get(cv2.CAP_PROP_GAMMA)
-    # temperture = cap.get(cv2.CAP_PROP_TEMPERATURE)
-    # white_blance = cap.get(cv2.CAP_PROP_WHITE_BALANCE_RED_V)
-    # zoom = cap.get(cv2.CAP_PROP_ZOOM)
-    # focus = cap.get(cv2.CAP_PROP_FOCUS)
-    # guid = cap.get(cv2.CAP_PROP_GUID)
-    # iso_speed = cap.get(cv2.CAP_PROP_ISO_SPEED)
-    # backlight = cap.get(cv2.CAP_PROP_BACKLIGHT)
-    # pan = cap.get(cv2.CAP_PROP_PAN)
-    # tilt = cap.get(cv2.CAP_PROP_TILT)
-    # roll = cap.get(cv2.CAP_PROP_IRIS)
-    
-    # #----------------#
-    # # property debug #
-    # #----------------#
-    # print('width', width)
-    # print('height', height)
-    # print('fps', fps)
-    # print('brightness', brightness)
-    # print('contrast', contrast)
-    # print('saturation', saturation)
-    # print('hue', hue)
-    # # print('gain', gain) # gain is not supported
-    # print('exposure', exposure)
-    # print('hue', hue)
-    # print('exposure', exposure)
-    # print('rectification', rectification)
-    # print('monochrome', monochrome)
-    # print('sharpness', sharpness)
-    # print('auto_exposure', auto_exposure)
-    # print('gamma', gamma)
-    # print('temperture', temperture)
-    # print('white_blance', white_blance)
-    # print('zoom', zoom)
-    # print('focus', focus)
-    # print('guid', guid)
-    # print('iso_speed', iso_speed)
-    # print('backlight', backlight)
-    # # print('pan', pan)
-    # # print('tilt', tilt)
-    # # print('roll', roll)
-    return
-
-
 class IngredientThread(threading.Thread):
   def __init__(self,
                bbox3,
@@ -163,7 +102,9 @@ class IngredientThread(threading.Thread):
                previous_predictions_1,
                bbox3_instances,
                bbox4_instances,
-               current_instances,):
+               current_instances,
+               bbox3_category,
+               bbox4_category):
     super(IngredientThread, self).__init__()
     self.bbox3 = bbox3
     self.bbox4 = bbox4
@@ -173,9 +114,11 @@ class IngredientThread(threading.Thread):
     self.db_map = db_map
     self.previous_predictions_1 = previous_predictions_1
     self.current_predictions_1 = []
-    self.bbox3_instance = None
-    self.bbox4_instance = None
+    self.bbox3_instance = bbox3_instances
+    self.bbox4_instance = bbox4_instances
     self.current_instances = []
+    self.bbox3_category = bbox3_category
+    self.bbox4_category = bbox4_category
     
   def run(self):
     tf.reset_default_graph()
@@ -221,6 +164,7 @@ class IngredientThread(threading.Thread):
             probability = '{:.4f}'.format(x.max())
             self.bbox3_instance = str(category_name) + ' : ' + probability
             recognition_rates.append(x.max())
+            self.bbox3_category = self.category_map[x.argmax()]
         elif bbox_name == 'right':
             print('*'*20 + 'RIGHT' + '*'*20)
             self.current_instances.append(self.category_map[x.argmax()])
@@ -228,6 +172,7 @@ class IngredientThread(threading.Thread):
             probability = '{:.4f}'.format(x.max())
             self.bbox4_instance = str(category_name) + ' : ' + probability
             recognition_rates.append(x.max())
+            self.bbox4_category = self.category_map[x.argmax()]
         print(sys.stdout.write(
             '%s Top 1 prediction: %d %s %f'
             % (str(bbox_name), x.argmax(), self.category_map[x.argmax()], x.max())
@@ -245,6 +190,13 @@ class IngredientThread(threading.Thread):
       print('self.bbox3_instance', self.bbox3_instance)
       print('self.bbox4_instance', self.bbox4_instance)
 
+      if self.previous_predictions_1[0] is '':
+        self.previous_predictions_1[0] = '0'
+      if self.previous_predictions_1[1] is '':
+        self.previous_predictions_1[1] = '0'
+
+      print('self.current_predictions_1', type(self.current_predictions_1[0]))
+
       print('self.previous_predictions_1', self.previous_predictions_1)
       print('self.current_predictions_1', self.current_predictions_1)
       print(self.previous_predictions_1 != self.current_predictions_1)
@@ -254,34 +206,42 @@ class IngredientThread(threading.Thread):
         print('change')
         print('*'*15 + ' request ' +'*'*15)
         t_query_0 = time.time()
-        query = 'http://localhost:8080/update_recipe?ingredient_ids1={}&ingredient_ids2={}&flying_pan=true&page_index=0&ingredient_name1={}&ingredient_name2={}&recognition_rate1={:.4f}&recognition_rate2={:.4f}'.format(
-            self.current_predictions_1[0],
-            self.current_predictions_1[1],
-            self.current_instances[0],
-            self.current_instances[1],
-            recognition_rates[0],
-            recognition_rates[1],
-        )
-        print('query', query)
-        requests.get(query)
-        t_query_1 = time.time()
-        print('request time :', t_query_1 - t_query_0)
+
+        # send request when it detects gyoza
+        if self.category_map[x.argmax()] == 'gyoza':
+          print('detect gyoza')
+          print('take a picture')
+          print('*'*30 + ' request ' +'*'*30)
+          t_query_0 = time.time()
+          query = 'http://localhost:8080/update_recipe?ingredient_ids1=35&ingredient_ids2=42&flying_pan=false'
+          print('query', query)
+          requests.get(query)
+          t_query_1 = time.time()
+          print('request time :', t_query_1 - t_query_0)
+        else:
+          if self.current_predictions_1[0] == '0' and self.current_predictions_1[1] == '0':
+            self.current_predictions_1[0] = '0'
+            self.current_predictions_1[1] = '0'
+          if self.current_predictions_1[0] == '0' and self.current_predictions_1[1] is not '0':
+            self.current_predictions_1[0] = ''
+          if self.current_predictions_1[1] == '0' and self.current_predictions_1[0] is not '0':
+            self.current_predictions_1[1] = ''
+          query = 'http://localhost:8080/update_recipe?ingredient_ids1={}&ingredient_ids2={}&flying_pan=true&page_index=0&ingredient_name1={}&ingredient_name2={}&recognition_rate1={:.4f}&recognition_rate2={:.4f}'.format(
+              self.current_predictions_1[0],
+              self.current_predictions_1[1],
+              self.current_instances[0],
+              self.current_instances[1],
+              recognition_rates[0],
+              recognition_rates[1],
+          )
+          print('*'*15 + 'query' + '*'*15, query)
+          requests.get(query)
+          t_query_1 = time.time()
+          print('request time :', t_query_1 - t_query_0)
       else:
         print('not change')
         pass
-      # send request when it detects gyoza
-      if self.category_map[x.argmax()] == 'gyoza':
-        print('detect gyoza')
-        print('take a picture')
-        print('*'*15 + ' request ' +'*'*15)
-        t_query_0 = time.time()
-        query = 'http://localhost:8080/update_recipe?ingredient_ids1=35&ingredient_ids2=42&flying_pan=true'
-        print('query', query)
-        requests.get(query)
-        t_query_1 = time.time()
-        print('request time :', t_query_1 - t_query_0)
-      else:
-        pass      
+
 
 class CookingThread(threading.Thread):
   def __init__(self,
@@ -357,9 +317,12 @@ class CookingThread(threading.Thread):
       if self.previous_predictions_2 + 1 == self.current_predictions_2:
         self.status = self.current_predictions_2
         print('change')
-        t_query_0 = time.time()
-        query = 'http://localhost:8080/update_recipe?ingredient_ids1=35&ingredient_ids2=43&flying_pan=true'
-        requests.get(query)
+        print('*'*15 + 'gyoza query' + '*'*15)
+        self.bbox2_instance = str(self.status) + ' : ' + str(self.category_map[x.argmax()])
+        print('self.bbox2_instance', self.bbox2_instance)
+        # t_query_0 = time.time()
+        # query = 'http://localhost:8080/update_recipe?ingredient_ids1=35&ingredient_ids2=43&flying_pan=false'
+        # requests.get(query)
       else:
         pass
       print('current status: %s %s ' % (self.status, self.category_map[self.status]))
@@ -378,15 +341,20 @@ class CookwareThread(threading.Thread):
                checkpoint_file,
                category_map,
                bbox1_instances,
-               current_instances,):
+               current_instances,
+               ingredient_current_instances,
+               bbox1_category):
     super(CookwareThread, self).__init__()
     self.bbox1 = bbox1
     # self.output_dir = output_dir
     self.checkpoint_file = checkpoint_file
     self.category_map = category_map
-    self.bbox1_instance = None
+    self.bbox1_instance = bbox1_category
     self.current_instances = []
-    
+    self.ingredient_current_instances = ingredient_current_instances
+    self.bbox1_category = bbox1_category
+    self.kettle_flag = False
+
   def run(self):
     print('category_map', self.category_map)
     tf.reset_default_graph()
@@ -427,6 +395,13 @@ class CookwareThread(threading.Thread):
       probability = '{:.4f}'.format(x.max())
       self.bbox1_instance = str(category_name) + ' : ' + probability
       recognition_rates.append(x.max())
+      print('self.bbox1_category', self.bbox1_category)
+      print('self.category_map', self.category_map[x.argmax()])
+      print(self.bbox1_category == self.category_map[x.argmax()])
+      if self.bbox1_category == self.category_map[x.argmax()]:
+        self.kettle_flag = True
+      self.bbox1_category = self.category_map[x.argmax()]
+      print('self.bbox1_category', self.bbox1_category)
       print(sys.stdout.write(
           'Top 1 prediction: %d %s %f'
           % (x.argmax(), self.category_map[x.argmax()], x.max())
@@ -441,20 +416,32 @@ class CookwareThread(threading.Thread):
       print('current_instances', self.current_instances)
       print('self.bbox1_instance', self.bbox1_instance)
 
-      # if instance is kettle, throw request
-      if self.category_map[x.argmax()] == 'kettle':
-        print('detect kettle')
-        print('*'*15 + ' request ' +'*'*15)
-        t_query_0 = time.time()
-        query = 'http://localhost:8080/update_recipe?ingredient_ids1=35&ingredient_ids2=42&flying_pan=true'
-        print('query', query)
-        requests.get(query)
-        t_query_1 = time.time()
-        print('request time :', t_query_1 - t_query_0)
-      else:
-        print('not kettle')
-        pass
-
+      # when ingredient name1 and 2 is nothing, throw request which instance is kettle or not
+      print('self.kettle_flag', self.kettle_flag)
+      if self.kettle_flag == False:
+        print('self.ingredient_current_instances', self.ingredient_current_instances)
+        if self.ingredient_current_instances[0] == 'nothing' \
+          and self.ingredient_current_instances[1] == 'nothing':
+          if self.category_map[x.argmax()] == 'kettle':
+            print('detect kettle')
+            print('*'*15 + ' request ' +'*'*15)
+            t_query_0 = time.time()
+            query = 'http://localhost:8080/update_kettle?kettle_exist=true'
+            print('query', query)
+            requests.get(query)
+            t_query_1 = time.time()
+            print('request time :', t_query_1 - t_query_0)
+          else:
+            print('not kettle')
+            t_query_0 = time.time()
+            query = 'http://localhost:8080/update_kettle?kettle_exist=false'
+            print('query', query)
+            requests.get(query)
+            t_query_1 = time.time()
+            print('request time :', t_query_1 - t_query_0)
+            pass
+        else:
+          pass
 
 
 def main():
@@ -521,14 +508,14 @@ def main():
   cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
   cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
-  # requests.get('http://localhost:8080/update_recipe?ingredient_ids1=42,46&ingredient_ids2=43,617&frying_pan=true&page_index=0')
-  
   # start video capture
   count = 0
   previous_predictions_1 = []
   previous_predictions_2 = 0
   status = 0
-  current_instances = []
+  ingredient_current_instances = ['nothing', 'nothing']
+  cookware_current_instances = []
+  bbox1_category, bbox2_category, bbox3_category, bbox4_category = '','','',''
 
   bbox1_instance, bbox2_instance, bbox3_instance, bbox4_instance = 'bbox1', 'bbox2', 'bbox3', 'bbox4' 
   
@@ -543,33 +530,118 @@ def main():
 
     # access category name for each thread class
     try:
-      current_instances = thread1.current_instances
-      # print('if thread1 != None: current_instaces', current_instances)
+      ingredient_current_instances = thread1.current_instances
+      cookware_current_instances = thread3.current_instances
       # print('thread1.current_instances', thread1.current_instances)
       # print('type', type(thread1.current_instances))
       bbox1_instance = thread3.bbox1_instance
+      bbox2_instance = thread2.bbox2_instance
       bbox3_instance = thread1.bbox3_instance
       bbox4_instance = thread1.bbox4_instance
+      bbox1_category = thread3.bbox1_category
     except UnboundLocalError:
       print('Unboundlocalerror')
       pass
-    
+
+    # # higobashi bbox
+    # # bbox1(cookware)
+    # cv2.rectangle(
+    #     frame,
+    #     ((center1_width-threshold-(share_margin)),
+    #      (center_height-(threshold*3)-(share_margin))),
+    #     ((center1_width+threshold+(share_margin)),
+    #      (center_height-threshold-(share_margin))),
+    #     (0,0,255),
+    #     3
+    # )
+    # cv2.putText(
+    #     frame,
+    #     str(bbox1_instance),
+    #     (center1_width-threshold, center_height-(threshold*3)-text_margin),
+    #     cv2.FONT_HERSHEY_PLAIN,
+    #     2,
+    #     (255,0,0),
+    #     3,
+    #     cv2.LINE_AA
+    # )
+    # # bbox2(cooking)
+    # cv2.rectangle(
+    #     frame,
+    #     ((center1_width-threshold-(share_margin)),
+    #      (center_height-threshold-(share_margin))), # start coordinates
+    #     ((center1_width+threshold+(share_margin)),
+    #      (center_height+threshold+(share_margin))), # end coordinates
+    #     (0,0,255),
+    #     3
+    # )
+    # cv2.putText(
+    #     frame,
+    #     str(count),
+    #     (center1_width-threshold, center_height+threshold+text_margin+stings_space),
+    #     cv2.FONT_HERSHEY_PLAIN,
+    #     2,
+    #     (255,0,0),
+    #     3,
+    #     cv2.LINE_AA
+    # )
+    # # bbox3(ingredient1)
+    # cv2.rectangle(
+    #     frame,
+    #     ((center2_width-threshold-(share_margin)),
+    #      (center_height-threshold-(share_margin))), # start coordinates
+    #     ((center2_width+threshold+(share_margin)),
+    #      (center_height+threshold+(share_margin))), # end coordinates 
+    #     (0,0,255),
+    #     3
+    # )
+    # cv2.putText(
+    #     frame,
+    #     str(bbox3_instance),
+    #     (center2_width-threshold, center_height-threshold-text_margin),
+    #     cv2.FONT_HERSHEY_PLAIN,
+    #     2,
+    #     (255,0,0),
+    #     3,
+    #     cv2.LINE_AA
+    # )
+    # # bbox4(ingredient2)
+    # cv2.rectangle(
+    #     frame,
+    #     ((center3_width-threshold-(share_margin)),
+    #      (center_height-threshold-(share_margin))), # start coordinates
+    #     ((center3_width+threshold+(share_margin)),
+    #      (center_height+threshold+(share_margin))), # end coordinates
+    #     (0,0,255),
+    #     3
+    # )
+    # cv2.putText(
+    #     frame,
+    #     str(bbox4_instance),
+    #     (center3_width-threshold, center_height-threshold-text_margin),
+    #     cv2.FONT_HERSHEY_PLAIN,
+    #     2,
+    #     (255,0,0),
+    #     3,
+    #     cv2.LINE_AA
+    # )
+
+    # kusatsu bbox
     # bbox1(cookware)
     cv2.rectangle(
         frame,
-        ((center1_width-threshold-(share_margin)),
-         (center_height-(threshold*3)-(share_margin))),
-        ((center1_width+threshold+(share_margin)),
-         (center_height-threshold-(share_margin))),
+        ((center1_width-threshold-(share_margin))-440,
+         (center_height-threshold-(share_margin))+190), # start coordinates
+        ((center1_width+threshold+(share_margin))-440,
+         (center_height+threshold+(share_margin))+190), # end coordinates
         (0,0,255),
         3
     )
     cv2.putText(
         frame,
         str(bbox1_instance),
-        (center1_width-threshold, center_height-(threshold*3)-text_margin),
+        (center1_width-threshold-440, (center_height+190)-(threshold)-(text_margin)),
         cv2.FONT_HERSHEY_PLAIN,
-        2,
+        1.5,
         (255,0,0),
         3,
         cv2.LINE_AA
@@ -577,19 +649,19 @@ def main():
     # bbox2(cooking)
     cv2.rectangle(
         frame,
-        ((center1_width-threshold-(share_margin)),
-         (center_height-threshold-(share_margin))), # start coordinates
-        ((center1_width+threshold+(share_margin)),
-         (center_height+threshold+(share_margin))), # end coordinates
+        ((center1_width-threshold-(share_margin))-440,
+         (center_height-threshold-(share_margin))+190), # start coordinates
+        ((center1_width+threshold+(share_margin))-440,
+         (center_height+threshold+(share_margin))+190), # end coordinates
         (0,0,255),
         3
     )
     cv2.putText(
         frame,
-        str(count),
-        (center1_width-threshold, center_height+threshold+text_margin+stings_space),
+        str(bbox2_instance),
+        (center1_width-threshold-440, (center_height+190)+(threshold)+(text_margin*3)),
         cv2.FONT_HERSHEY_PLAIN,
-        2,
+        1.5,
         (255,0,0),
         3,
         cv2.LINE_AA
@@ -597,19 +669,19 @@ def main():
     # bbox3(ingredient1)
     cv2.rectangle(
         frame,
-        ((center2_width-threshold-(share_margin)),
-         (center_height-threshold-(share_margin))), # start coordinates
-        ((center2_width+threshold+(share_margin)),
-         (center_height+threshold+(share_margin))), # end coordinates 
+        ((center2_width-threshold-(share_margin))-300,
+         (center_height-threshold-(share_margin))+130), # start coordinates
+        ((center2_width+threshold+(share_margin))-300,
+         (center_height+threshold+(share_margin))+130), # end coordinates 
         (0,0,255),
         3
     )
     cv2.putText(
         frame,
         str(bbox3_instance),
-        (center2_width-threshold, center_height-threshold-text_margin),
+        ((center2_width-300)-threshold, (center_height+130)-threshold-text_margin),
         cv2.FONT_HERSHEY_PLAIN,
-        2,
+        1.5,
         (255,0,0),
         3,
         cv2.LINE_AA
@@ -617,19 +689,19 @@ def main():
     # bbox4(ingredient2)
     cv2.rectangle(
         frame,
-        ((center3_width-threshold-(share_margin)),
-         (center_height-threshold-(share_margin))), # start coordinates
-        ((center3_width+threshold+(share_margin)),
-         (center_height+threshold+(share_margin))), # end coordinates
+        ((center3_width-threshold-(share_margin))-300,
+         (center_height-threshold-(share_margin))+130), # start coordinates
+        ((center3_width+threshold+(share_margin))-300,
+         (center_height+threshold+(share_margin))+130), # end coordinates
         (0,0,255),
         3
     )
     cv2.putText(
         frame,
         str(bbox4_instance),
-        (center3_width-threshold, center_height-threshold-text_margin),
+        ((center3_width-300)-threshold, (center_height+130)-threshold-text_margin),
         cv2.FONT_HERSHEY_PLAIN,
-        2,
+        1.5,
         (255,0,0),
         3,
         cv2.LINE_AA
@@ -639,14 +711,57 @@ def main():
     # cv2.setMouseCallback('frame', print_coordinates)
 
     # ROI
-    bbox1 = frame[center_height-threshold*3+10:center_height-threshold-10,
-                  center1_width-threshold:center1_width+threshold]
-    bbox2 = frame[center_height-threshold:center_height+threshold,
-                  center1_width-threshold:center1_width+threshold]
-    bbox3 = frame[center_height-threshold:center_height+threshold,
-                  center2_width-threshold:center2_width+threshold]
-    bbox4 = frame[center_height-threshold:center_height+threshold,
-                  center3_width-threshold:center3_width+threshold]
+    bbox1 = frame[center_height-threshold+190:center_height+threshold+190,
+                  center1_width-threshold-440:center1_width+threshold-440]
+    bbox2 = frame[center_height-threshold+190:center_height+threshold+190,
+                  center1_width-threshold-440:center1_width+threshold-440]
+    bbox3 = frame[center_height-threshold+130:center_height+threshold+130,
+                  center2_width-threshold-300:center2_width+threshold-300]
+    bbox4 = frame[center_height-threshold+130:center_height+threshold+130,
+                  center3_width-threshold-300:center3_width+threshold-300]
+
+    # # ROI dump
+    # print('bbox1',
+    #       (center_height-threshold*3+10, center_height-threshold-10),
+    #       (center1_width-threshold, center1_width+threshold)
+    # )
+    # print('bbox2',
+    #       (center_height-threshold, center_height+threshold),
+    #       (center1_width-threshold,center1_width+threshold)
+    # )
+    # print('bbox3',
+    #       (center_height-threshold, center_height+threshold),
+    #       (center2_width-threshold, center2_width+threshold)
+    # )
+    # print('bbox4',
+    #       (center_height-threshold, center_height+threshold),
+    #       (center3_width-threshold, center3_width+threshold)
+    # )
+
+    print('kusatsu bbox1',
+          (center_height-threshold*3+10+420,
+           center_height-threshold-10+420),
+          (center1_width-threshold-440,
+           center1_width+threshold-440)
+    )
+    # print('kusatsu bbox2',
+    #       (center_height-threshold-190,
+    #        center_height+threshold+190),
+    #       (center1_width-threshold-440,
+    #        center1_width+threshold-440)
+    # )
+    # print('kusatsu bbox3',
+    #       (center_height-threshold+130,
+    #        center_height+threshold+130),
+    #       (center2_width-threshold-300,
+    #        center2_width+threshold-300)
+    # )
+    # print('kusatsu bbox4',
+    #       (center_height-threshold+130,
+    #        center_heihgt+threshold+130),
+    #       (center3_width-threshold-300,
+    #        center3_width+threshold-300)
+    # )
 
     # # save image of bounding box
     # now = datetime.now()
@@ -661,7 +776,7 @@ def main():
     # bbox2 = bbox2[:,:,::-1]
     # bbox3 = bbox3[:,:,::-1]
 
-    if count % 30 == 1:
+    if count % 15 == 1:
       thread1 = IngredientThread(
           bbox3,
           bbox4,
@@ -672,12 +787,14 @@ def main():
           previous_predictions_1,
           bbox3_instance,
           bbox4_instance,
-          current_instances,
+          ingredient_current_instances,
+          bbox3_category,
+          bbox4_category,
         )
       thread1.start()
       previous_predictions_1 = thread1.current_predictions_1
       
-    elif count % 30 == 11:
+    elif count % 15 == 6:
       thread2 = CookingThread(
           bbox2,
           # output_dir,
@@ -695,18 +812,21 @@ def main():
       previous_predictions_2 = thread2.status
       print('thread2.status', thread2.status)
 
-      bbox2_instance = thread2.bbox2_instance
+      # bbox2_instance = thread2.bbox2_instance
 
-    elif count % 30 == 21:
+    elif count % 15 == 11:
       thread3 = CookwareThread(
           bbox1,
           # output_dir,
           cookware_checkpoint_file,
           cookware_category_map,
           bbox1_instance,
-          current_instances,
+          cookware_current_instances,
+          ingredient_current_instances,
+          bbox1_category,
         )
       thread3.start()
+      bbox1_category = thread3.bbox1_category
           
     else:
       pass    

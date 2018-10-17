@@ -33,7 +33,7 @@ _FILE_PATTERN = 'food_%s_*.tfrecord'
 
 SPLITS_TO_SIZES = {'train': 65140, 'validation': 180}
 
-_NUM_CLASSES = 4
+_NUM_CLASSES = 6
 
 _ITEMS_TO_DESCRIPTIONS = {
     'image': 'A color image of varying size.',
